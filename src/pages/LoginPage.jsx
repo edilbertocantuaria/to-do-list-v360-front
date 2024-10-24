@@ -18,7 +18,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (auth && auth.token) {
-      navigate("/my-toDos");
+      navigate("/myTaskLists");
     }
   }, [auth, navigate]);
 
@@ -38,7 +38,7 @@ export default function LoginPage() {
       const errorMessage =
         error.response?.data.errors ||
         error.response?.data.error ||
-        "An error occurred.";
+        "An unknow error occurred.";
       addAlert("error", "Error", errorMessage);
     } finally {
       setIsLoading(false);

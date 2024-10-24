@@ -18,7 +18,7 @@ export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [alerts, setAlerts] = useState([]);
-  const { auth, login } = useAuth();
+  const { auth } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,27 +31,28 @@ export default function SignUpPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
     setOpen(true);
 
     try {
-      const response = await api.signUp({ ...formData });
-      login(response.data);
-      addAlert("success", "Success!", "New account registered.");
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        password_confirmation: "",
-        user_picture: ""
+      const response = api.signUp({ ...formData });
+      response.then(() => {
+        addAlert("success", "Success!", "New account registered.");
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          password_confirmation: "",
+          user_picture: ""
+        });
       });
     } catch (error) {
       const errorMessage =
         error.response?.data.errors ||
         error.response?.data.error ||
-        "An error occurred.";
+        "An unknow error occurred.";
       addAlert("error", "Error", errorMessage);
     } finally {
       setIsLoading(false);

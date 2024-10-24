@@ -20,7 +20,7 @@ async function login(body) {
   return promise;
 }
 
-function signUp(body) {
+async function signUp(body) {
   const promise = axios.post(`${BASE_URL}/users/signup`, body);
 
   return promise;
@@ -34,7 +34,7 @@ function getMe(token) {
 }
 
 // Task Lists
-function getTaskLists(token) {
+async function getTaskLists(token) {
   const config = createConfig(token);
   const promise = axios.get(`${BASE_URL}/task-lists`, config);
 
