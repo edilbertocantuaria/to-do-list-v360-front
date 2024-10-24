@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react";
-// import { useNavigate, useLocation } from "react-router-dom";
-// import { Container } from "@mui/material";
-// import api from "../services/api.js";
 import useAuth from "../hooks/useAuth.js";
-// import AlertList from "../components/AlertList.jsx";
-// import LoadingDialog from "../components/LoadingDialog.jsx";
 import { pathsWithoutHeaderAndMenu } from "../App.js";
 import { AppBar, Toolbar, Typography, IconButton, Avatar } from "@mui/material";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
@@ -28,11 +23,16 @@ export default function Header() {
   if (pathsWithoutHeaderAndMenu.includes(location.pathname)) {
     return null;
   }
-  //   console.log(userData)
-  //   console.log(auth.token)
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#0A69DD" }}>
+    <AppBar
+      position="static"
+      sx={{
+        backgroundColor: "#0A69DD",
+        boxShadow: "none",
+        borderRadius: "16px"
+      }}
+    >
       <Toolbar>
         <Avatar
           alt={capitalize(userData?.name.trim())}

@@ -31,13 +31,13 @@ export default function SignUpPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
     setOpen(true);
 
     try {
-      const response = api.signUp({ ...formData });
+      const response = await api.signUp({ ...formData });
       response.then(() => {
         addAlert("success", "Success!", "New account registered.");
         setFormData({
@@ -146,6 +146,7 @@ export default function SignUpPage() {
             variant="contained"
             disabled={isLoading}
             sx={{
+              borderRadius: "16px",
               mt: 3,
               mb: 2,
               backgroundColor: "#096AE3",
@@ -164,6 +165,7 @@ export default function SignUpPage() {
               variant="contained"
               disabled={isLoading}
               sx={{
+                borderRadius: "16px",
                 mb: 2,
                 backgroundColor: "#FE683F",
                 "&:hover": {

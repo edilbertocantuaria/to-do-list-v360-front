@@ -102,6 +102,7 @@ export default function LoginPage() {
             variant="contained"
             disabled={isLoading}
             sx={{
+              borderRadius: "16px",
               mt: 3,
               mb: 2,
               backgroundColor: "#096AE3",
@@ -120,6 +121,7 @@ export default function LoginPage() {
               variant="contained"
               disabled={isLoading}
               sx={{
+                borderRadius: "16px",
                 mb: 2,
                 backgroundColor: "#FE683F",
                 "&:hover": {
