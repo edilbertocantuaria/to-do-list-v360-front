@@ -1,18 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  CircularProgress,
-  Container,
-  TextField,
-  Button,
-  Link,
-  Dialog
-} from "@mui/material";
+import { Container, TextField, Button, Link } from "@mui/material";
 import { Box } from "@mui/system";
 import api from "../services/api.js";
 import logo from "../assets/img/toDo.png";
 import useAuth from "../hooks/useAuth.js";
 import AlertList from "../components/AlertList.jsx";
+import LoadingDialog from "../components/LoadingDialog.jsx";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -37,25 +31,23 @@ export default function LoginPage() {
     setIsLoading(true);
     setOpen(true);
 
-    const promise = api.login({ ...formData });
+    try {
+      const response = await api.login({ ...formData });
+      login(response.data);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data.errors ||
+        error.response?.data.error ||
+        "An error occurred.";
+      addAlert("error", "Error", errorMessage);
+    } finally {
+      setIsLoading(false);
+      setOpen(false);
+    }
+  }
 
-    promise
-      .then((response) => {
-        setIsLoading(false);
-        login(response.data);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        setOpen(false);
-
-        if (error.response) {
-          const errorMessage = error.response.data?.error;
-          setAlerts((prevAlerts) => [
-            ...prevAlerts,
-            { severity: "error", title: "Error", message: errorMessage }
-          ]);
-        }
-      });
+  function addAlert(severity, title, message) {
+    setAlerts((prevAlerts) => [...prevAlerts, { severity, title, message }]);
   }
 
   const handleAlertClose = (index) => {
@@ -141,36 +133,7 @@ export default function LoginPage() {
         </Box>
       </Box>
 
-      <Dialog
-        open={open}
-        onClose={() => setOpen(false)}
-        PaperProps={{
-          style: { backgroundColor: "transparent", boxShadow: "none" }
-        }}
-      >
-        <Box display="flex" justifyContent="center" alignItems="center" p={5}>
-          <React.Fragment>
-            <svg width={0} height={0}>
-              <defs>
-                <linearGradient
-                  id="my_gradient"
-                  x1="0%"
-                  y1="0%"
-                  x2="0%"
-                  y2="100%"
-                >
-                  <stop offset="0%" stopColor="#e01cd5" />
-                  <stop offset="100%" stopColor="#1CB5E0" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <CircularProgress
-              size={60}
-              sx={{ "svg circle": { stroke: "url(#my_gradient)" } }}
-            />
-          </React.Fragment>
-        </Box>
-      </Dialog>
+      <LoadingDialog open={open} onClose={() => setOpen(false)} />
 
       <AlertList alerts={alerts} onClose={handleAlertClose} />
     </Container>
