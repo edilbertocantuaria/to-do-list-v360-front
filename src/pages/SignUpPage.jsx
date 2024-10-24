@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  CircularProgress,
-  Container,
-  TextField,
-  Button,
-  Link,
-  Dialog
-} from "@mui/material";
+import { Container, TextField, Button, Link } from "@mui/material";
 import { Box } from "@mui/system";
 import api from "../services/api.js";
-import logo from "../assets/img/toDo.png";
 import useAuth from "../hooks/useAuth.js";
 import AlertList from "../components/AlertList.jsx";
+import LoadingDialog from "../components/LoadingDialog.jsx";
 
-export default function LoginPage() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+export default function SignUpPage() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+    user_picture: ""
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [alerts, setAlerts] = useState([]);
@@ -37,25 +36,31 @@ export default function LoginPage() {
     setIsLoading(true);
     setOpen(true);
 
-    const promise = api.login({ ...formData });
-
-    promise
-      .then((response) => {
-        setIsLoading(false);
-        login(response.data);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        setOpen(false);
-
-        if (error.response) {
-          const errorMessage = error.response.data?.error;
-          setAlerts((prevAlerts) => [
-            ...prevAlerts,
-            { severity: "error", title: "Error", message: errorMessage }
-          ]);
-        }
+    try {
+      const response = await api.signUp({ ...formData });
+      login(response.data);
+      addAlert("success", "Success!", "New account registered.");
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        password_confirmation: "",
+        user_picture: ""
       });
+    } catch (error) {
+      const errorMessage =
+        error.response?.data.errors ||
+        error.response?.data.error ||
+        "An error occurred.";
+      addAlert("error", "Error", errorMessage);
+    } finally {
+      setIsLoading(false);
+      setOpen(false);
+    }
+  }
+
+  function addAlert(severity, title, message) {
+    setAlerts((prevAlerts) => [...prevAlerts, { severity, title, message }]);
   }
 
   const handleAlertClose = (index) => {
@@ -63,22 +68,29 @@ export default function LoginPage() {
   };
 
   return (
-    <Container maxWidth="xs" sx={{ bgcolor: "#EEEEEE" }}>
+    <Container
+      maxWidth="xs"
+      sx={{ bgcolor: "#EEEEEE", mt: "85px", mb: "20px" }}
+    >
       <Box
         display="flex"
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
       >
-        <img
-          alt="toDo.png"
-          src={logo}
-          style={{ marginBottom: "20px", marginTop: "20px" }}
-          width={"250px"}
-          height={"280px"}
-        />
-
         <Box component="form" onSubmit={handleSubmit}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            label="Name"
+            name="name"
+            type="name"
+            value={formData.name}
+            onChange={handleChange}
+            disabled={isLoading}
+            required
+          />
           <TextField
             variant="outlined"
             margin="normal"
@@ -103,6 +115,29 @@ export default function LoginPage() {
             disabled={isLoading}
             required
           />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            label="Confirm Password"
+            name="password_confirmation"
+            type="password"
+            value={formData.password_confirmation}
+            onChange={handleChange}
+            disabled={isLoading}
+            required
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            label="Photo (URL)"
+            name="user_picture"
+            type="url"
+            value={formData.user_picture}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
 
           <Button
             type="submit"
@@ -118,10 +153,10 @@ export default function LoginPage() {
               }
             }}
           >
-            Login
+            Register
           </Button>
 
-          <Link href="/register" variant="body2" fullWidth>
+          <Link variant="body2" fullWidth>
             <Button
               type="button"
               fullWidth
@@ -134,43 +169,15 @@ export default function LoginPage() {
                   backgroundColor: "#D74544"
                 }
               }}
+              onClick={() => navigate("/")}
             >
-              Don't have an account? Register now!
+              Already registered? Login!
             </Button>
           </Link>
         </Box>
       </Box>
 
-      <Dialog
-        open={open}
-        onClose={() => setOpen(false)}
-        PaperProps={{
-          style: { backgroundColor: "transparent", boxShadow: "none" }
-        }}
-      >
-        <Box display="flex" justifyContent="center" alignItems="center" p={5}>
-          <React.Fragment>
-            <svg width={0} height={0}>
-              <defs>
-                <linearGradient
-                  id="my_gradient"
-                  x1="0%"
-                  y1="0%"
-                  x2="0%"
-                  y2="100%"
-                >
-                  <stop offset="0%" stopColor="#e01cd5" />
-                  <stop offset="100%" stopColor="#1CB5E0" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <CircularProgress
-              size={60}
-              sx={{ "svg circle": { stroke: "url(#my_gradient)" } }}
-            />
-          </React.Fragment>
-        </Box>
-      </Dialog>
+      <LoadingDialog open={open} onClose={() => setOpen(false)} />
 
       <AlertList alerts={alerts} onClose={handleAlertClose} />
     </Container>

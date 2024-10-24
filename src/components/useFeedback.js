@@ -65,7 +65,6 @@ export default function useFeedback() {
   }
 
   function showError(message, options = { persist: true }) {
-    console.log(message);
     const newMessage = formatIfApiError(message);
     enqueueSnackbar(newMessage, {
       ...options,

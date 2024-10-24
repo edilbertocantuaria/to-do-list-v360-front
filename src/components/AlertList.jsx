@@ -26,7 +26,15 @@ const AlertList = ({ alerts, onClose }) => {
           variant="filled"
         >
           <AlertTitle>{alert.title}</AlertTitle>
-          <li>{alert.message}</li>
+          {Array.isArray(alert.message) ? (
+            <>
+              {alert.message.map((m, i) => (
+                <li key={i}>{m}</li>
+              ))}
+            </>
+          ) : (
+            <li>{alert.message}</li>
+          )}
         </Alert>
       ))}
     </Stack>
