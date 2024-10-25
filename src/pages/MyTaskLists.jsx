@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Fab, Tooltip } from "@mui/material";
 import api from "../services/api.js";
 import useAuth from "../hooks/useAuth.js";
+import useReload from "../hooks/useReload.js";
 import AlertList from "../components/AlertList.jsx";
 import Header from "../components/Header.jsx";
 import AddIcon from "@mui/icons-material/Add";
@@ -15,8 +16,10 @@ export default function MyTaskLists() {
   const [newTaskListDialogOpen, setNewTaskListDialogOpen] = useState(false);
   const [myTaskLists, setMyTaskLists] = useState([]);
   const [alerts, setAlerts] = useState([]);
+  const [alertShown, setAlertShown] = useState(false); 
   const [newTaskListTitle, setNewTaskListTitle] = useState("");
   const { auth } = useAuth();
+  const { shouldReload, setShouldReload } = useReload();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,7 +28,7 @@ export default function MyTaskLists() {
     }
   }, [auth, navigate]);
 
-  async function loadToDos() {
+  async function loadTaskLists() {
     if (!auth || !auth.token) return;
 
     setOpen(true);
@@ -33,12 +36,14 @@ export default function MyTaskLists() {
     try {
       const response = await api.getTaskLists(auth.token);
       setMyTaskLists(response.data);
-
-      if (response.data.length === 0) {
+      if (response.data.length === 0 && !alertShown) {
         addAlert("info", "Info", "There's no task list yet!");
-      } else {
+        setAlertShown(true);
+      } else if (response.data.length > 0 && !alertShown) {
         addAlert("success", "Success!", "Task Lists loaded!");
+        setAlertShown(true); 
       }
+      setShouldReload(false);
     } catch (error) {
       const errorMessage =
         error.response?.data.errors ||
@@ -58,10 +63,9 @@ export default function MyTaskLists() {
     setAlerts((prevAlerts) => prevAlerts.filter((_, i) => i !== index));
   };
 
-  //deve ser chamado sempre que uma tasklist mudar de percentagem, uma task list for nova ou apagar uma tasklist
   useEffect(() => {
-    loadToDos();
-  }, []);
+    if (shouldReload) loadTaskLists();
+  }, [shouldReload]);
 
   const handleCreateTaskList = async () => {
     if (!newTaskListTitle) {
@@ -74,7 +78,7 @@ export default function MyTaskLists() {
       addAlert("success", "Success!", "Task list created!");
       setNewTaskListDialogOpen(false);
       setNewTaskListTitle("");
-      loadToDos();
+      setShouldReload(true);
     } catch (error) {
       const errorMessage =
         error.response?.data.errors ||

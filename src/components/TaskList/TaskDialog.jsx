@@ -11,6 +11,7 @@ import TaskDetail from "../tasks/TaskDetail";
 import NewTaskInput from "../tasks/NewTaskInput";
 import api from "../../services/api";
 import useAuth from "../../hooks/useAuth";
+import useReload from "../../hooks/useReload";
 import AlertList from "../AlertList";
 
 export default function TaskDialog({ open, taskList, onClose }) {
@@ -21,6 +22,7 @@ export default function TaskDialog({ open, taskList, onClose }) {
   const [originalTaskValue, setOriginalTaskValue] = useState("");
 
   const { auth } = useAuth();
+  const { setShouldReload } = useReload();
 
   useEffect(() => {
     if (taskList && taskList.tasks) {
@@ -47,8 +49,10 @@ export default function TaskDialog({ open, taskList, onClose }) {
 
         setTasks((prevTasks) => [...prevTasks, newTaskAdded]);
         setNewTask("");
-        addAlert("success", "Success!", "Task added successfully!");
+        // addAlert("success", "Success!", "Task added successfully!");
+        setShouldReload(true);
       } catch (error) {
+        console.log(error)
         const errorMessage =
           error.response?.data.errors ||
           error.response?.data.error ||
@@ -90,16 +94,17 @@ export default function TaskDialog({ open, taskList, onClose }) {
         );
         setTasks(updatedTasks);
 
-        const successMessage =
-          action === "toggle"
-            ? "Task progress changed successfully!"
-            : "Task description updated successfully!";
-        addAlert("success", "Success!", successMessage);
+        // const successMessage =
+        //   action === "toggle"
+        //     ? "Task progress changed successfully!"
+        //     : "Task description updated successfully!";
+        // addAlert("success", "Success!", successMessage);
 
         if (action === "edit") {
           setOriginalTaskValue(taskDescription);
           setEditValue(taskDescription);
         }
+        setShouldReload(true);
       } catch (error) {
         const errorMessage =
           error.response?.data.errors ||
@@ -130,7 +135,8 @@ export default function TaskDialog({ open, taskList, onClose }) {
 
     try {
       await api.deleteTask(taskList.id, taskId, auth.token);
-      addAlert("success", "Success!", "Task deleted successfully!");
+      // addAlert("success", "Success!", "Task deleted successfully!");
+      setShouldReload(true);
     } catch (error) {
       const errorMessage =
         error.response?.data.errors ||
@@ -185,7 +191,7 @@ export default function TaskDialog({ open, taskList, onClose }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} sx={{ color: "#0A6AE2" }}>
-            Fechar
+            Close
           </Button>
         </DialogActions>
       </Dialog>
