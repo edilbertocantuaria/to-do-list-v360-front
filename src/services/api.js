@@ -91,7 +91,6 @@ function postTask(listId, body, token) {
   return promise;
 }
 
-// eslint-disable-next-line no-unused-vars
 function putTask(listId, taskId, body, token) {
   const config = createConfig(token);
   const promise = axios.put(
