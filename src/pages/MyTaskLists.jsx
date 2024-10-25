@@ -6,7 +6,7 @@ import useAuth from "../hooks/useAuth.js";
 import AlertList from "../components/AlertList.jsx";
 import Header from "../components/Header.jsx";
 import AddIcon from "@mui/icons-material/Add";
-import TaskList from "../components/TaskList/TaskList.jsx";
+import TaskListPage from "../components/TaskList/TaskListPage.jsx";
 import LoadingDialog from "../components/LoadingDialog.jsx";
 
 export default function MyTaskLists() {
@@ -62,7 +62,7 @@ export default function MyTaskLists() {
   return (
     <>
       <Header />
-      <TaskList myTaskLists={myTaskLists} />
+      <TaskListPage myTaskLists={myTaskLists} />
 
       <Tooltip title="New Task List">
         <Fab

@@ -1274,7 +1274,7 @@
 
 "@emotion/react@^11.13.3":
   version "11.13.3"
-  resolved "https://registry.npmjs.org/@emotion/react/-/react-11.13.3.tgz"
+  resolved "https://registry.yarnpkg.com/@emotion/react/-/react-11.13.3.tgz#a69d0de2a23f5b48e0acf210416638010e4bd2e4"
   integrity sha512-lIsdU6JNrmYfJ5EbUCf4xW1ovy5wKQ2CkPRM4xogziOxH1nXxBSjpC9YqbFAP7circxMfYp+6x676BqWcEiixg==
   dependencies:
     "@babel/runtime" "^7.18.3"
@@ -1304,7 +1304,7 @@
 
 "@emotion/styled@^11.13.0":
   version "11.13.0"
-  resolved "https://registry.npmjs.org/@emotion/styled/-/styled-11.13.0.tgz"
+  resolved "https://registry.yarnpkg.com/@emotion/styled/-/styled-11.13.0.tgz#633fd700db701472c7a5dbef54d6f9834e9fb190"
   integrity sha512-tkzkY7nQhW/zC4hztlwucpT8QEZ6eUzpXDRhww/Eej4tFfO0FxQYWRyg/c5CCXa4d/f174kqeXYjuQRnhzf6dA==
   dependencies:
     "@babel/runtime" "^7.18.3"
@@ -1713,7 +1713,7 @@
 
 "@mui/material@^6.1.5":
   version "6.1.5"
-  resolved "https://registry.npmjs.org/@mui/material/-/material-6.1.5.tgz"
+  resolved "https://registry.yarnpkg.com/@mui/material/-/material-6.1.5.tgz#1ba8deda18564b277f37d957d523a9d2624b4b9a"
   integrity sha512-rhaxC7LnlOG8zIVYv7BycNbWkC5dlm9A/tcDUp0CuwA7Zf9B9JP6M3rr50cNKxI7Z0GIUesAT86ceVm44quwnQ==
   dependencies:
     "@babel/runtime" "^7.25.7"
@@ -3379,7 +3379,7 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001646, caniuse-lite@^1.0.30001669:
 
 capitalize-pt-br@^0.6.0:
   version "0.6.0"
-  resolved "https://registry.yarnpkg.com/capitalize-pt-br/-/capitalize-pt-br-0.6.0.tgz#49be8a76b66ca32ba1e6646e93aca278ffc8fdd1"
+  resolved "https://registry.npmjs.org/capitalize-pt-br/-/capitalize-pt-br-0.6.0.tgz"
   integrity sha512-Xhhrm/WSfXzpupUy+WnPYsL+ajtiflXInXnp9yAruYGQw3vvK8MHz0lzX4LbUSC6E57rJym9RC8IFOvyOvdSOw==
 
 case-sensitive-paths-webpack-plugin@^2.4.0:
