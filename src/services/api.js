@@ -91,18 +91,18 @@ function postTask(listId, body, token) {
   return promise;
 }
 
-function putTasks(listId, taskId, body, token) {
+// eslint-disable-next-line no-unused-vars
+function putTask(listId, taskId, body, token) {
   const config = createConfig(token);
   const promise = axios.put(
     `${BASE_URL}/task-lists/${listId}/tasks/${taskId}`,
     body,
     config
   );
-
   return promise;
 }
 
-function deleteTasks(listId, taskId, token) {
+function deleteTask(listId, taskId, token) {
   const config = createConfig(token);
   const promise = axios.delete(
     `${BASE_URL}/task-lists/${listId}/tasks/${taskId}`,
@@ -160,8 +160,8 @@ const api = {
   deleteTaskList,
   getTasks,
   postTask,
-  putTasks,
-  deleteTasks,
+  putTask,
+  deleteTask,
   getTags,
   getTag,
   postTag,

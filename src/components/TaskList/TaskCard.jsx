@@ -3,7 +3,6 @@ import ShareIcon from "@mui/icons-material/Share";
 import TaskItems from "./TaskItems";
 import TaskProgress from "./TaskProgress";
 
-
 export default function TaskCard({ taskList, onClick }) {
   return (
     <Box

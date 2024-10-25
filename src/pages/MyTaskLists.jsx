@@ -8,11 +8,14 @@ import Header from "../components/Header.jsx";
 import AddIcon from "@mui/icons-material/Add";
 import TaskListPage from "../components/TaskList/TaskListPage.jsx";
 import LoadingDialog from "../components/LoadingDialog.jsx";
+import NewTaskListDialog from "../components/TaskList/NewTaskListDialog.jsx";
 
 export default function MyTaskLists() {
   const [open, setOpen] = useState(false);
+  const [newTaskListDialogOpen, setNewTaskListDialogOpen] = useState(false);
   const [myTaskLists, setMyTaskLists] = useState([]);
   const [alerts, setAlerts] = useState([]);
+  const [newTaskListTitle, setNewTaskListTitle] = useState("");
   const { auth } = useAuth();
   const navigate = useNavigate();
 
@@ -55,9 +58,31 @@ export default function MyTaskLists() {
     setAlerts((prevAlerts) => prevAlerts.filter((_, i) => i !== index));
   };
 
+  //deve ser chamado sempre que uma tasklist mudar de percentagem, uma task list for nova ou apagar uma tasklist
   useEffect(() => {
     loadToDos();
   }, []);
+
+  const handleCreateTaskList = async () => {
+    if (!newTaskListTitle) {
+      addAlert("error", "Error", "Task list title cannot be empty!");
+      return;
+    }
+
+    try {
+      await api.createTaskList(auth.token, { title: newTaskListTitle });
+      addAlert("success", "Success!", "Task list created!");
+      setNewTaskListDialogOpen(false);
+      setNewTaskListTitle("");
+      loadToDos();
+    } catch (error) {
+      const errorMessage =
+        error.response?.data.errors ||
+        error.response?.data.error ||
+        "An unknown error occurred.";
+      addAlert("error", "Error", errorMessage);
+    }
+  };
 
   return (
     <>
@@ -77,11 +102,17 @@ export default function MyTaskLists() {
               backgroundColor: "#2CADFE"
             }
           }}
-          onClick={() => alert("Novo task list!")}
+          onClick={() => setNewTaskListDialogOpen(true)}
         >
           <AddIcon />
         </Fab>
       </Tooltip>
+
+      <NewTaskListDialog
+        open={newTaskListDialogOpen}
+        onClose={() => setNewTaskListDialogOpen(false)}
+        onCreate={handleCreateTaskList}
+      />
 
       <LoadingDialog open={open} onClose={() => setOpen(false)} />
       <AlertList alerts={alerts} onClose={handleAlertClose} />
