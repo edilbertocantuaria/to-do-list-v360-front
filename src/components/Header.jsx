@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import useAuth from "../hooks/useAuth.js";
 import { pathsWithoutHeaderAndMenu } from "../App.js";
-import { AppBar, Toolbar, Typography, IconButton, Avatar } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Avatar,
+  Tooltip
+} from "@mui/material";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { useLocation } from "react-router-dom";
 import capitalize from "capitalize-pt-br";
@@ -47,9 +54,11 @@ export default function Header() {
             Total of task lists: {userData?.taskListsCreated || 0}
           </Typography>
         </div>
-        <IconButton color="inherit" onClick={logout} aria-label="Logout">
-          <LogoutOutlinedIcon />
-        </IconButton>
+        <Tooltip title="Logout">
+          <IconButton color="inherit" onClick={logout} tooltip="Logout">
+            <LogoutOutlinedIcon />
+          </IconButton>
+        </Tooltip>
       </Toolbar>
     </AppBar>
   );
