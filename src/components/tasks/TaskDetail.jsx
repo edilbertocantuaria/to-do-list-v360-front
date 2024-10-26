@@ -46,6 +46,11 @@ export default function TaskDetail({
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
                   onBlur={() => handleEdit(task.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleEdit(task.id);
+                    }
+                  }}
                   sx={{ width: "46.16vw" }}
                 />
               ) : (

@@ -1,18 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import TaskCard from "./TaskCard";
 import TaskDialog from "./TaskDialog";
+import useReload from "../../hooks/useReload";
 
 export default function TaskListPage({ myTaskLists }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedTaskList, setSelectedTaskList] = useState(null);
+  const { openedTaskList, setOpenedTaskList } = useReload();
+
+  useEffect(() => {
+    if (openedTaskList) {
+      const taskList = myTaskLists.find((list) => list.id === openedTaskList);
+      setSelectedTaskList(taskList || null);
+    } else {
+      setSelectedTaskList(null);
+    }
+  }, [openedTaskList, myTaskLists]);
 
   const handleCardClick = (taskList) => {
+    setOpenedTaskList(taskList.id);
     setSelectedTaskList(taskList);
     setDialogOpen(true);
   };
 
   const handleDialogClose = () => {
+    setOpenedTaskList(null);
     setDialogOpen(false);
     setSelectedTaskList(null);
   };
@@ -85,9 +98,9 @@ export default function TaskListPage({ myTaskLists }) {
             onClick={handleCardClick}
           />
         ))}
-
       <TaskDialog
         open={dialogOpen}
+        setOpen={setDialogOpen}
         taskList={selectedTaskList}
         onClose={handleDialogClose}
       />

@@ -14,7 +14,7 @@ import useAuth from "../../hooks/useAuth";
 import useReload from "../../hooks/useReload";
 import AlertList from "../AlertList";
 
-export default function TaskDialog({ open, taskList, onClose }) {
+export default function TaskDialog({ open, setOpen, taskList, onClose }) {
   const [tasks, setTasks] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [newTask, setNewTask] = useState("");
@@ -35,24 +35,10 @@ export default function TaskDialog({ open, taskList, onClose }) {
       const newTaskObj = { task_description: newTask };
 
       try {
-        const response = await api.postTask(
-          taskList.id,
-          newTaskObj,
-          auth.token
-        );
-
-        const newTaskAdded = {
-          id: response.data.idTask,
-          task_description: response.data.taskDescription,
-          is_task_done: response.data.isTaskDone
-        };
-
-        setTasks((prevTasks) => [...prevTasks, newTaskAdded]);
+        await api.postTask(taskList.id, newTaskObj, auth.token);
         setNewTask("");
-        // addAlert("success", "Success!", "Task added successfully!");
         setShouldReload(true);
       } catch (error) {
-        console.log(error)
         const errorMessage =
           error.response?.data.errors ||
           error.response?.data.error ||
@@ -88,23 +74,12 @@ export default function TaskDialog({ open, taskList, onClose }) {
             : { task_description: taskDescription };
 
         await api.putTask(taskList.id, taskId, body, auth.token);
-
-        const updatedTasks = tasks.map((task) =>
-          task.id === taskId ? updatedTask : task
-        );
-        setTasks(updatedTasks);
-
-        // const successMessage =
-        //   action === "toggle"
-        //     ? "Task progress changed successfully!"
-        //     : "Task description updated successfully!";
-        // addAlert("success", "Success!", successMessage);
+        setShouldReload(true);
 
         if (action === "edit") {
           setOriginalTaskValue(taskDescription);
           setEditValue(taskDescription);
         }
-        setShouldReload(true);
       } catch (error) {
         const errorMessage =
           error.response?.data.errors ||
@@ -130,12 +105,23 @@ export default function TaskDialog({ open, taskList, onClose }) {
   }
 
   async function handleDelete(taskId) {
-    const updatedTasks = tasks.filter((task) => task.id !== taskId);
-    setTasks(updatedTasks);
-
     try {
       await api.deleteTask(taskList.id, taskId, auth.token);
-      // addAlert("success", "Success!", "Task deleted successfully!");
+      setShouldReload(true);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data.errors ||
+        error.response?.data.error ||
+        "An unknown error occurred.";
+
+      addAlert("error", "Error", errorMessage);
+    }
+  }
+
+  async function handleDeleteTaskList(taskList) {
+    try {
+      await api.deleteTaskList(taskList, auth.token);
+      setOpen(false);
       setShouldReload(true);
     } catch (error) {
       const errorMessage =
@@ -151,9 +137,9 @@ export default function TaskDialog({ open, taskList, onClose }) {
     setAlerts((prevAlerts) => [...prevAlerts, { severity, title, message }]);
   }
 
-  const handleAlertClose = (index) => {
+  function handleAlertClose(index) {
     setAlerts((prevAlerts) => prevAlerts.filter((_, i) => i !== index));
-  };
+  }
 
   return (
     <>
@@ -192,6 +178,12 @@ export default function TaskDialog({ open, taskList, onClose }) {
         <DialogActions>
           <Button onClick={onClose} sx={{ color: "#0A6AE2" }}>
             Close
+          </Button>
+          <Button
+            onClick={() => handleDeleteTaskList(taskList.id)}
+            sx={{ color: "#DA4646" }}
+          >
+            Delete Task List
           </Button>
         </DialogActions>
       </Dialog>

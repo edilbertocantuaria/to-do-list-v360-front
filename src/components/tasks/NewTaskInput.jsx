@@ -1,7 +1,10 @@
 import { TextField, Grid2, Tooltip, IconButton } from "@mui/material";
-import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
+import AddTaskIcon from "@mui/icons-material/AddTask";
 
 export default function NewTaskInput({ newTask, setNewTask, handleAddTask }) {
+  const handleBlur = () => {
+    setNewTask("");
+  };
   return (
     <Grid2 item xs={12}>
       <Grid2
@@ -19,6 +22,12 @@ export default function NewTaskInput({ newTask, setNewTask, handleAddTask }) {
                 fullWidth
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleAddTask(newTask);
+                  }
+                }}
+                onBlur={() => handleBlur()}
                 sx={{ marginBottom: 2, width: "50vw" }}
               />
             </Grid2>
@@ -34,7 +43,7 @@ export default function NewTaskInput({ newTask, setNewTask, handleAddTask }) {
               onClick={() => handleAddTask(newTask)}
               sx={{ color: "#109DCB" }}
             >
-              <CheckOutlinedIcon />
+              <AddTaskIcon />
             </IconButton>
           </Tooltip>
         </Grid2>
