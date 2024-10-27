@@ -287,14 +287,15 @@ export default function TaskDialog({
           </Grid2>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} sx={{ color: "#0A6AE2" }}>
-            Close
-          </Button>
           <Button
             onClick={() => handleDeleteTaskList(taskList.id)}
             sx={{ color: "#DA4646" }}
           >
             Delete Task List
+          </Button>
+
+          <Button onClick={handleCloseDialog} sx={{ color: "#0A6AE2" }}>
+            Close
           </Button>
         </DialogActions>
       </Dialog>

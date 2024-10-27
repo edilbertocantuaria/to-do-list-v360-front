@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import TaskCard from "./TaskCard";
 import TaskDialog from "./TaskDialog";
+import TaskFilter from "../TaskFilter";
 import useReload from "../../hooks/useReload";
 
 export default function TaskListPage({ myTaskLists }) {
@@ -9,6 +10,7 @@ export default function TaskListPage({ myTaskLists }) {
   const [selectedTaskList, setSelectedTaskList] = useState(null);
   const { openedTaskList, setOpenedTaskList } = useReload();
   const [isEditingFile, setIsEditingFile] = useState(false);
+  const [filteredTaskLists, setFilteredTaskLists] = useState(myTaskLists);
 
   useEffect(() => {
     if (openedTaskList) {
@@ -32,6 +34,82 @@ export default function TaskListPage({ myTaskLists }) {
     setSelectedTaskList(null);
   }
 
+  function handleFilterChange(selectedFilter) {
+    let sortedTasks = [...myTaskLists];
+
+    switch (selectedFilter) {
+      case "progressAsc":
+        sortedTasks.sort(
+          (a, b) =>
+            a.percentage - b.percentage || a.title.localeCompare(b.title)
+        );
+        break;
+      case "progressDesc":
+        sortedTasks.sort(
+          (a, b) =>
+            b.percentage - a.percentage || a.title.localeCompare(b.title)
+        );
+        break;
+      case "createdAsc":
+        sortedTasks.sort(
+          (a, b) =>
+            new Date(a.created_at) - new Date(b.created_at) ||
+            a.title.localeCompare(b.title)
+        );
+        break;
+      case "createdDesc":
+        sortedTasks.sort(
+          (a, b) =>
+            new Date(b.created_at) - new Date(a.created_at) ||
+            a.title.localeCompare(b.title)
+        );
+        break;
+      case "modifiedAsc":
+        sortedTasks.sort(
+          (a, b) =>
+            new Date(a.updated_at) - new Date(b.updated_at) ||
+            a.title.localeCompare(b.title)
+        );
+        break;
+      case "modifiedDesc":
+        sortedTasks.sort(
+          (a, b) =>
+            new Date(b.updated_at) - new Date(a.updated_at) ||
+            a.title.localeCompare(b.title)
+        );
+        break;
+      case "alphabeticalAsc":
+        sortedTasks.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "alphabeticalDesc":
+        sortedTasks.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case "taskCountAsc":
+        sortedTasks.sort(
+          (a, b) =>
+            a.tasks.length - b.tasks.length || a.title.localeCompare(b.title)
+        );
+        break;
+      case "taskCountDesc":
+        sortedTasks.sort(
+          (a, b) =>
+            b.tasks.length - a.tasks.length || a.title.localeCompare(b.title)
+        );
+        break;
+      default:
+        break;
+    }
+
+    setFilteredTaskLists(sortedTasks);
+  }
+
+  const pendingTaskLists = filteredTaskLists.filter(
+    (taskList) => taskList.percentage < 100
+  );
+  const concludedTaskLists = filteredTaskLists.filter(
+    (taskList) => taskList.percentage === 100
+  );
+
   return (
     <Box
       sx={{
@@ -48,6 +126,8 @@ export default function TaskListPage({ myTaskLists }) {
         gap: "20px"
       }}
     >
+      <TaskFilter onFilterChange={handleFilterChange} />
+
       <Box sx={{ width: "100%" }}>
         <Typography
           variant="h6"
@@ -64,16 +144,13 @@ export default function TaskListPage({ myTaskLists }) {
           Pendings
         </Typography>
       </Box>
-      {myTaskLists
-        .filter((taskList) => taskList.percentage < 100)
-        .sort((a, b) => a.percentage - b.percentage)
-        .map((taskList) => (
-          <TaskCard
-            key={taskList.id}
-            taskList={taskList}
-            onClick={handleCardClick}
-          />
-        ))}
+      {pendingTaskLists.map((taskList) => (
+        <TaskCard
+          key={taskList.id}
+          taskList={taskList}
+          onClick={handleCardClick}
+        />
+      ))}
 
       <Box sx={{ width: "100%" }}>
         <Typography
@@ -91,15 +168,13 @@ export default function TaskListPage({ myTaskLists }) {
           Concluded
         </Typography>
       </Box>
-      {myTaskLists
-        .filter((taskList) => taskList.percentage === 100)
-        .map((taskList) => (
-          <TaskCard
-            key={taskList.id}
-            taskList={taskList}
-            onClick={handleCardClick}
-          />
-        ))}
+      {concludedTaskLists.map((taskList) => (
+        <TaskCard
+          key={taskList.id}
+          taskList={taskList}
+          onClick={handleCardClick}
+        />
+      ))}
       <TaskDialog
         open={dialogOpen}
         setOpen={setDialogOpen}
