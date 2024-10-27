@@ -4,6 +4,7 @@ import { Fab, Tooltip } from "@mui/material";
 import api from "../services/api.js";
 import useAuth from "../hooks/useAuth.js";
 import useReload from "../hooks/useReload.js";
+import useMyTasksList from "../hooks/useMyTaskLists.js";
 import AlertList from "../components/AlertList.jsx";
 import Header from "../components/Header.jsx";
 import AddIcon from "@mui/icons-material/Add";
@@ -14,10 +15,11 @@ import NewTaskListDialog from "../components/TaskList/NewTaskListDialog.jsx";
 export default function MyTaskLists() {
   const [open, setOpen] = useState(false);
   const [newTaskListDialogOpen, setNewTaskListDialogOpen] = useState(false);
-  const [myTaskLists, setMyTaskLists] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [alertShown, setAlertShown] = useState(false);
+
   const { auth } = useAuth();
+  const { myTaskLists, setMyTaskLists } = useMyTasksList();
   const { shouldReload, setShouldReload } = useReload();
   const navigate = useNavigate();
 

@@ -7,17 +7,21 @@ import logo from "../assets/img/toDo.png";
 import useAuth from "../hooks/useAuth.js";
 import AlertList from "../components/AlertList.jsx";
 import LoadingDialog from "../components/LoadingDialog.jsx";
+import useMyTasksList from "../hooks/useMyTaskLists.js";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [alerts, setAlerts] = useState([]);
+  const [alertShown, setAlertShown] = useState(false);
   const { auth, login } = useAuth();
+  const { setMyTaskLists } = useMyTasksList();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (auth && auth.token) {
+      loadTaskLists();
       navigate("/myTaskLists");
     }
   }, [auth, navigate]);
@@ -52,6 +56,28 @@ export default function LoginPage() {
 
   function handleAlertClose(index) {
     setAlerts((prevAlerts) => prevAlerts.filter((_, i) => i !== index));
+  }
+
+  async function loadTaskLists() {
+    try {
+      const response = await api.getTaskLists(auth.token);
+      setMyTaskLists(response.data);
+      if (response.data.length === 0 && !alertShown) {
+        addAlert("info", "Info", "There's no task list yet!");
+        setAlertShown(true);
+      } else if (response.data.length > 0 && !alertShown) {
+        addAlert("success", "Success!", "Task Lists loaded!");
+        setAlertShown(true);
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data.errors ||
+        error.response?.data.error ||
+        "An unknown error occurred.";
+      addAlert("error", "Error", errorMessage);
+    } finally {
+      setOpen(false);
+    }
   }
 
   return (
