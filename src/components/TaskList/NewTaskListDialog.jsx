@@ -1,6 +1,4 @@
-/* eslint-disable react/jsx-key */
-/* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -15,212 +13,55 @@ import TaskAttachment from "./TaskAttachment";
 import api from "../../services/api";
 import AlertList from "../AlertList";
 import useReload from "../../hooks/useReload";
-import TaskDetail from "../tasks/TaskDetail";
 
 export default function NewTaskListDialog({ open, onClose, auth }) {
   const [title, setTitle] = useState("");
-  const [taskTitle, setTaskTitle] = useState("");
-  const [previousTitle, setPreviousTitle] = useState("");
-  const [isEditingTitle, setIsEditingTitle] = useState(true);
-
   const [tasks, setTasks] = useState([""]);
-  const [taskList, setTaskList] = useState(null);
-
-  const [newTask, setNewTask] = useState("");
-  const [originalTaskValue, setOriginalTaskValue] = useState("");
-  const [editTaskDescription, setEditTaskDescription] = useState("");
-
-  const [isEditingFile, setIsEditingFile] = useState(false);
   const [attachmentUrl, setAttachmentUrl] = useState("");
-
-  const [taskListId, setTaskListId] = useState(null);
   const [alerts, setAlerts] = useState([]);
-
-  const [taskInputs, setTaskInputs] = useState([
-    <NewTaskInput
-      newTask={newTask}
-      setNewTask={setNewTask}
-      handleAddTask={handleAddTask}
-      add
-    />
-  ]);
-
+  const [isEditingFile, setIsEditingFile] = useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const { setShouldReload } = useReload();
 
   function originalState() {
-    // setTitle("");
-    setIsEditingFile(false);
+    setTitle("");
+    setTasks([""]);
     setAttachmentUrl("");
-    setTasks([]);
-    setIsEditingTitle(false);
-  }
-
-  useEffect(() => {
-    if (taskList && taskList.tasks) {
-      setTasks(taskList.tasks);
-    }
-  }, [taskList]);
-
-  useEffect(() => {
-    if (!open) {
-      setNewTask("");
-    }
-  }, [open]);
-
-  async function loadTasks() {
-    try {
-      const response = await api.getTaskList(taskListId, auth.token);
-      setTasks(response.data.tasks);
-    } catch (error) {
-      console.error("Erro ao carregar tarefas:", error);
-    }
-  }
-
-  async function handleAddTaskLists(title) {
-    if (title.trim()) {
-      const body = {
-        title: title.trim(),
-        attachment: attachmentUrl || null
-      };
-
-      try {
-        const response = await api.postTaskList(body, auth.token);
-        setTaskList(response.data);
-        setTaskListId(response.data.idTaskList);
-        setTaskTitle(response.data.titleTask);
-        setIsEditingTitle(false);
-        setShouldReload(true);
-      } catch (error) {
-        const errorMessage =
-          error.response?.data.errors ||
-          error.response?.data.error ||
-          "An unknown error occurred.";
-        addAlert("error", "Error", errorMessage);
-      }
-    }
+    setIsEditingFile(false);
+    setShouldReload(true);
   }
 
   async function handleAddTask(newTask) {
     if (newTask.trim()) {
-      const newTaskObj = {
-        task_description: newTask.trim()
-      };
-
-      try {
-        const response = await api.postTask(taskListId, newTaskObj, auth.token);
-        setTasks([...tasks, ""]);
-        setNewTask("");
-        loadTasks();
-        setShouldReload(true);
-      } catch (error) {
-        const errorMessage =
-          error.response?.data.errors ||
-          error.response?.data.error ||
-          "An unknown error occurred.";
-        addAlert("error", "Error", errorMessage);
-      }
+      setTasks([...tasks, ""]);
     }
   }
 
-  async function handleEditTaskList() {
-    try {
-      const body = {
-        title: title,
-        attachment: attachmentUrl
-      };
+  async function handleAddTaskLists() {
+    const body = {
+      task_list: {
+        title: title.trim(),
+        attachment: attachmentUrl || null,
+        tasks_attributes: tasks
+          .filter((task) => task.trim() !== "")
+          .map((task) => ({
+            task_description: task.trim()
+          }))
+      }
+    };
 
-      await api.putTaskList(taskList.id, body, auth.token);
+    try {
+      await api.postTaskList(body, auth.token);
       setShouldReload(true);
-      setIsEditingTitle(false);
+      originalState();
+      onClose();
     } catch (error) {
-      setTitle(previousTitle);
       const errorMessage =
         error.response?.data.errors ||
         error.response?.data.error ||
         "An unknown error occurred.";
       addAlert("error", "Error", errorMessage);
     }
-  }
-
-  async function handleTaskChange(taskId, action, taskDescription) {
-    const taskToChange = tasks.find((task) => task.id === taskId);
-
-    if (taskToChange) {
-      let updatedTask;
-
-      if (action === "toggle") {
-        updatedTask = {
-          ...taskToChange,
-          is_task_done: !taskToChange.is_task_done
-        };
-      } else if (action === "edit") {
-        updatedTask = {
-          ...taskToChange,
-          task_description: taskDescription,
-          isEditing: false
-        };
-      }
-
-      try {
-        const body =
-          action === "toggle"
-            ? { is_task_done: updatedTask.is_task_done }
-            : { task_description: taskDescription };
-
-        await api.putTask(taskList.id, taskId, body, auth.token);
-        setShouldReload(true);
-
-        if (action === "edit") {
-          setOriginalTaskValue(taskDescription);
-          setEditTaskDescription(taskDescription);
-        }
-      } catch (error) {
-        const errorMessage =
-          error.response?.data.errors ||
-          error.response?.data.error ||
-          "An unknown error occurred.";
-
-        if (action === "edit") {
-          const revertedTasks = tasks.map((task) =>
-            task.id === taskId
-              ? {
-                  ...task,
-                  task_description: originalTaskValue,
-                  isEditing: false
-                }
-              : task
-          );
-          setTasks(revertedTasks);
-        }
-
-        addAlert("error", "Error", errorMessage);
-      }
-    }
-  }
-
-  async function handleDelete(taskId) {
-    try {
-      await api.deleteTask(taskList.id, taskId, auth.token);
-      setShouldReload(true);
-    } catch (error) {
-      const errorMessage =
-        error.response?.data.errors ||
-        error.response?.data.error ||
-        "An unknown error occurred.";
-
-      addAlert("error", "Error", errorMessage);
-    }
-  }
-
-  function handleAddNewTaskInput() {
-    setTaskInputs([
-      ...taskInputs,
-      <NewTaskInput
-        newTask={newTask}
-        setNewTask={setNewTask}
-        handleAddTask={handleAddTask}
-      />
-    ]);
   }
 
   function addAlert(severity, title, message) {
@@ -231,17 +72,23 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
     setAlerts((prevAlerts) => prevAlerts.filter((_, i) => i !== index));
   }
 
-  function handleCloseDialog() {
-    setTitle("");
-    setTaskTitle("");
-    setIsEditingTitle(true);
-    setTaskListId(null);
-    setNewTask("");
+  function handleCancel() {
+    setOpenConfirmDialog(true);
+  }
+
+  function handleConfirmCancel() {
+    setOpenConfirmDialog(false);
+    originalState();
     onClose();
   }
+
+  function handleCloseConfirm() {
+    setOpenConfirmDialog(false);
+  }
+
   return (
     <>
-      <Dialog open={open} onClose={handleCloseDialog} maxWidth="md">
+      <Dialog open={open} onClose={handleCancel} maxWidth="md">
         <DialogContent>
           <Grid2 container spacing={2}>
             <TextField
@@ -267,6 +114,7 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
                     setTasks(newTasks);
                   }}
                   handleAddTask={handleAddTask}
+                  isNewTaskDialog={true}
                 />
               ))}
             </Grid2>
@@ -275,7 +123,6 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
             <Grid2 item xs={12} sx={{ mt: 3 }}>
               <TaskAttachment
                 isEditingFile={isEditingFile}
-                setIsEditingFile={setIsEditingFile}
                 setAttachmentUrl={setAttachmentUrl}
               />
             </Grid2>
@@ -283,7 +130,7 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleCloseDialog} sx={{ color: "#DA4646" }}>
+          <Button onClick={handleCancel} sx={{ color: "#DA4646" }}>
             Cancel
           </Button>
           <Button
@@ -291,6 +138,25 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
             sx={{ color: "#0A69DD" }}
           >
             Create
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openConfirmDialog}
+        onClose={handleCloseConfirm}
+        aria-labelledby="confirm-cancel-dialog"
+      >
+        <DialogTitle id="confirm-cancel-dialog">Confirm Cancel</DialogTitle>
+        <DialogContent>
+          All information will be lost. Do you want to proceed?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirm} sx={{ color: "#DA4646" }}>
+            Back
+          </Button>
+          <Button onClick={handleConfirmCancel} sx={{ color: "#0A69DD" }}>
+            Proceed
           </Button>
         </DialogActions>
       </Dialog>

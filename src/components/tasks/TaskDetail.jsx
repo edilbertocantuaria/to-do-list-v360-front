@@ -31,7 +31,7 @@ export default function TaskDetail({
             <Grid2 item>
               <Switch
                 checked={task.is_task_done}
-                onChange={() => handleToggle(task.id)}
+                onChange={handleToggle}
                 sx={{
                   "& .MuiSwitch-switchBase.Mui-checked": { color: "#FD7E00" },
                   "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {

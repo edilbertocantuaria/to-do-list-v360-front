@@ -34,7 +34,7 @@ export default function NewTaskInput({ newTask, setNewTask, handleAddTask }) {
           item
           sx={{ position: "absolute", right: 0, display: "flex", gap: 1 }}
         >
-          <Tooltip title="Save new task">
+          <Tooltip title="Add task">
             <IconButton
               onClick={() => handleAddTask(newTask)}
               sx={{ color: "#109DCB" }}

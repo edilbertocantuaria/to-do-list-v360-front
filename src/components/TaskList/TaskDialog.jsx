@@ -57,7 +57,13 @@ export default function TaskDialog({
 
   async function handleAddTask() {
     if (newTask.trim()) {
-      const newTaskObj = { task_description: newTask };
+      const newTaskObj = {
+        tasks: [
+          {
+            task_description: newTask
+          }
+        ]
+      };
 
       try {
         await api.postTask(taskList.id, newTaskObj, auth.token);
@@ -167,8 +173,9 @@ export default function TaskDialog({
         attachment: attachmentUrl
       };
 
-      await api.putTaskList(taskList.id, body, auth.token);
+      const response = await api.putTaskList(taskList.id, body, auth.token);
       setShouldReload(true);
+      setTitle(response.data.title);
     } catch (error) {
       const errorMessage =
         error.response?.data.errors ||
@@ -194,10 +201,12 @@ export default function TaskDialog({
       <Dialog open={open} onClose={onClose} maxWidth="md">
         {isEditingTitle ? (
           <TextField
-            value={taskList?.title}
+            value={isEditingTitle ? title : previousTitle}
             onChange={(e) => setTitle(e.target.value)}
             onBlur={() => handleEditTaskList(taskList)}
+            label="New Task List Title"
             autoFocus
+            sx={{ mt: 2 }}
           />
         ) : (
           <DialogTitle onClick={() => setIsEditingTitle(true)}>
@@ -224,8 +233,8 @@ export default function TaskDialog({
                   handleTaskChange(task.id, "edit", editTaskDescription)
                 }
                 handleDelete={handleDelete}
-                editTaskDescription={editTaskDescription}
-                setEditTaskDescription={setEditTaskDescription}
+                editValue={editTaskDescription}
+                setEditValue={setEditTaskDescription}
               />
             ))}
             <NewTaskInput
