@@ -28,7 +28,6 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
     setTasks([""]);
     setAttachmentUrl("");
     setIsEditingFile(false);
-    setShouldReload(true);
   }
 
   async function handleAddTask(newTask) {
@@ -73,7 +72,7 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
   }
 
   function handleCancel() {
-    setOpenConfirmDialog(true);
+    hasInfo ? setOpenConfirmDialog(true) : onClose();
   }
 
   function handleConfirmCancel() {
@@ -85,6 +84,11 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
   function handleCloseConfirm() {
     setOpenConfirmDialog(false);
   }
+  const hasInfo =
+    open &&
+    (title?.trim() ||
+      tasks?.some((task) => task.trim()) ||
+      attachmentUrl?.trim());
 
   return (
     <>
@@ -142,24 +146,26 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
         </DialogActions>
       </Dialog>
 
-      <Dialog
-        open={openConfirmDialog}
-        onClose={handleCloseConfirm}
-        aria-labelledby="confirm-cancel-dialog"
-      >
-        <DialogTitle id="confirm-cancel-dialog">Confirm Cancel</DialogTitle>
-        <DialogContent>
-          All information will be lost. Do you want to proceed?
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseConfirm} sx={{ color: "#DA4646" }}>
-            Back
-          </Button>
-          <Button onClick={handleConfirmCancel} sx={{ color: "#0A69DD" }}>
-            Proceed
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {hasInfo && (
+        <Dialog
+          open={openConfirmDialog}
+          onClose={handleCloseConfirm}
+          aria-labelledby="confirm-cancel-dialog"
+        >
+          <DialogTitle id="confirm-cancel-dialog">Confirm Cancel</DialogTitle>
+          <DialogContent>
+            All information will be lost. Do you want to proceed?
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseConfirm} sx={{ color: "#DA4646" }}>
+              Back
+            </Button>
+            <Button onClick={handleConfirmCancel} sx={{ color: "#0A69DD" }}>
+              Proceed
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
 
       <AlertList alerts={alerts} onClose={handleAlertClose} />
     </>

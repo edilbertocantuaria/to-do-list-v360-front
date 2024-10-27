@@ -37,8 +37,9 @@ export default function TaskDialog({
   const previousAttachmentUrl = taskList?.attachment || "";
 
   const [title, setTitle] = useState(taskList?.title || "");
+  const [newTitle, setNewTitle] = useState(title);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
-  const previousTitle = taskList?.title;
+  const [auxTitle, setAuxTitle] = useState(title);
 
   const { auth } = useAuth();
   const { setShouldReload } = useReload();
@@ -54,6 +55,21 @@ export default function TaskDialog({
       setNewTask("");
     }
   }, [open]);
+
+  function originalState() {
+    setTasks([]);
+    setAlerts([]);
+    setNewTask("");
+
+    setEditTaskDescription("");
+    setOriginalTaskValue("");
+
+    setAttachmentUrl(taskList?.attachment || "");
+
+    setTitle(taskList?.title || "");
+    setIsEditingTitle(false);
+    setAuxTitle(title);
+  }
 
   async function handleAddTask() {
     if (newTask.trim()) {
@@ -164,25 +180,27 @@ export default function TaskDialog({
     }
   }
 
-  async function handleEditTaskList(taskList) {
+  async function handleEditTaskList(taskList, newTitle) {
     try {
       setIsEditingFile(false);
       setIsEditingTitle(false);
+
       const body = {
-        title: title,
+        title: newTitle,
         attachment: attachmentUrl
       };
 
       const response = await api.putTaskList(taskList.id, body, auth.token);
       setShouldReload(true);
       setTitle(response.data.title);
+      setNewTitle("");
     } catch (error) {
       const errorMessage =
         error.response?.data.errors ||
         error.response?.data.error ||
         "An unknown error occurred.";
 
-      setTitle(previousTitle);
+      setTitle(auxTitle);
       setAttachmentUrl(previousAttachmentUrl);
       addAlert("error", "Error", errorMessage);
     }
@@ -196,17 +214,32 @@ export default function TaskDialog({
     setAlerts((prevAlerts) => prevAlerts.filter((_, i) => i !== index));
   }
 
+  function handleCloseDialog() {
+    originalState();
+    onClose();
+  }
+
   return (
     <>
       <Dialog open={open} onClose={onClose} maxWidth="md">
         {isEditingTitle ? (
           <TextField
-            value={isEditingTitle ? title : previousTitle}
-            onChange={(e) => setTitle(e.target.value)}
-            onBlur={() => handleEditTaskList(taskList)}
+            type="text"
+            variant="outlined"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            onBlur={() => {
+              originalState();
+              setIsEditingTitle(false);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleEditTaskList(taskList, newTitle);
+              }
+            }}
             label="New Task List Title"
             autoFocus
-            sx={{ mt: 2 }}
+            sx={{ mt: 4, ml: 2, mr: 2 }}
           />
         ) : (
           <DialogTitle onClick={() => setIsEditingTitle(true)}>
@@ -254,7 +287,7 @@ export default function TaskDialog({
           </Grid2>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} sx={{ color: "#0A6AE2" }}>
+          <Button onClick={handleCloseDialog} sx={{ color: "#0A6AE2" }}>
             Close
           </Button>
           <Button

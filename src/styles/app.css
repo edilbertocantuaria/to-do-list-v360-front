@@ -1,9 +1,14 @@
-body, html {
-      background-color: #EEEEEE;
-  
-    font-family: 'Lexend Deca', sans-serif;
+*,
+*::before,
+*::after {
+    font-family: 'Lexend Deca', sans-serif !important;
 }
-  
+
+body, html {
+    background-color: #EEEEEE;
+    font-family: 'Lexend Deca', sans-serif; 
+}
+
 .root {
     width: 100%;
     height: 100%;
