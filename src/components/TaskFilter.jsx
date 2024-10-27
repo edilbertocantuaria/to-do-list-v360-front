@@ -39,8 +39,8 @@ export default function TaskFilter({ onFilterChange }) {
         <MenuItem value="progressDesc">Progress (Desc)</MenuItem>
         <MenuItem value="createdDesc">Last Created</MenuItem>
         <MenuItem value="createdAsc">First created</MenuItem>
-        <MenuItem value="modifiedAsc">Last Modified</MenuItem>
-        <MenuItem value="modifiedDesc">First Modified</MenuItem>
+        <MenuItem value="modifiedDesc">Last Modified</MenuItem>
+        <MenuItem value="modifiedAsc">First Modified</MenuItem>
         <MenuItem value="alphabeticalAsc">Alphabetical Order (Asc)</MenuItem>
         <MenuItem value="alphabeticalDesc">Alphabetical Order (Desc)</MenuItem>
         <MenuItem value="taskCountAsc">Number of Tasks (Asc)</MenuItem>

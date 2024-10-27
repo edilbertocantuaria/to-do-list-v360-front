@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
   DialogActions,
   TextField,
@@ -10,8 +9,9 @@ import {
 } from "@mui/material";
 import NewTaskInput from "../tasks/NewTaskInput";
 import TaskAttachment from "./TaskAttachment";
+import ConfirmLeaveDialog from "../sharedComponents/ConfirmLeaveDialog";
 import api from "../../services/api";
-import AlertList from "../AlertList";
+import AlertList from "../sharedComponents/AlertList";
 import useReload from "../../hooks/useReload";
 
 export default function NewTaskListDialog({ open, onClose, auth }) {
@@ -147,24 +147,12 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
       </Dialog>
 
       {hasInfo && (
-        <Dialog
+        <ConfirmLeaveDialog
           open={openConfirmDialog}
           onClose={handleCloseConfirm}
-          aria-labelledby="confirm-cancel-dialog"
-        >
-          <DialogTitle id="confirm-cancel-dialog">Confirm Cancel</DialogTitle>
-          <DialogContent>
-            All information will be lost. Do you want to proceed?
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseConfirm} sx={{ color: "#DA4646" }}>
-              Back
-            </Button>
-            <Button onClick={handleConfirmCancel} sx={{ color: "#0A69DD" }}>
-              Proceed
-            </Button>
-          </DialogActions>
-        </Dialog>
+          onClickConfirm={handleCloseConfirm}
+          onClickCancel={handleConfirmCancel}
+        />
       )}
 
       <AlertList alerts={alerts} onClose={handleAlertClose} />

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import useAuth from "../hooks/useAuth.js";
-import { pathsWithoutHeaderAndMenu } from "../App.js";
+import useAuth from "../../hooks/useAuth.js";
+import { pathsWithoutHeaderAndMenu } from "../../App.js";
 import {
   AppBar,
   Toolbar,

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Fab, Tooltip } from "@mui/material";
@@ -5,11 +6,11 @@ import api from "../services/api.js";
 import useAuth from "../hooks/useAuth.js";
 import useReload from "../hooks/useReload.js";
 import useMyTasksList from "../hooks/useMyTaskLists.js";
-import AlertList from "../components/AlertList.jsx";
-import Header from "../components/Header.jsx";
+import AlertList from "../components/sharedComponents/AlertList.jsx";
+import Header from "../components/sharedComponents/Header.jsx";
 import AddIcon from "@mui/icons-material/Add";
 import TaskListPage from "../components/TaskList/TaskListPage.jsx";
-import LoadingDialog from "../components/LoadingDialog.jsx";
+import LoadingDialog from "../components/sharedComponents/LoadingDialog.jsx";
 import NewTaskListDialog from "../components/TaskList/NewTaskListDialog.jsx";
 
 export default function MyTaskLists() {
@@ -19,7 +20,7 @@ export default function MyTaskLists() {
   const [alertShown, setAlertShown] = useState(false);
 
   const { auth } = useAuth();
-  const { myTaskLists, setMyTaskLists } = useMyTasksList();
+  const { myTaskLists, setMyTaskLists, myTags, setMyTags } = useMyTasksList();
   const { shouldReload, setShouldReload } = useReload();
   const navigate = useNavigate();
 
@@ -106,7 +107,6 @@ export default function MyTaskLists() {
       <NewTaskListDialog
         open={newTaskListDialogOpen}
         onClose={() => setNewTaskListDialogOpen(false)}
-        // onCreate={handleCreateTaskList}
         auth={auth}
       />
 

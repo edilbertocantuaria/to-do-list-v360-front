@@ -75,20 +75,21 @@ export default function TaskDetail({
           item
           sx={{ position: "absolute", right: 0, display: "flex", gap: 1 }}
         >
-          <Tooltip title="Delete task">
-            <IconButton
-              onClick={() => handleDelete(task.id)}
-              sx={{ color: "#DA4646" }}
-            >
-              <DeleteForeverOutlinedIcon />
-            </IconButton>
-          </Tooltip>
           <Tooltip title="Edit task">
             <IconButton
               onClick={() => handleEditStart(task.id, task.task_description)}
               sx={{ color: "#0769A8" }}
             >
               <CreateOutlinedIcon />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Delete task">
+            <IconButton
+              onClick={() => handleDelete(task.id)}
+              sx={{ color: "#DA4646" }}
+            >
+              <DeleteForeverOutlinedIcon />
             </IconButton>
           </Tooltip>
         </Grid2>

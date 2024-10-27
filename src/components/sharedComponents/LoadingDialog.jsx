@@ -3,7 +3,7 @@ import Dialog from "@mui/material/Dialog";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const LoadingDialog = ({ open, onClose }) => {
+export default function LoadingDialog({ open, onClose }) {
   return (
     <Dialog
       open={open}
@@ -36,6 +36,4 @@ const LoadingDialog = ({ open, onClose }) => {
       </Box>
     </Dialog>
   );
-};
-
-export default LoadingDialog;
+}

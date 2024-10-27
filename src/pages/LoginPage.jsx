@@ -5,8 +5,8 @@ import { Box } from "@mui/system";
 import api from "../services/api.js";
 import logo from "../assets/img/toDo.png";
 import useAuth from "../hooks/useAuth.js";
-import AlertList from "../components/AlertList.jsx";
-import LoadingDialog from "../components/LoadingDialog.jsx";
+import AlertList from "../components/sharedComponents/AlertList.jsx";
+import LoadingDialog from "../components/sharedComponents/LoadingDialog.jsx";
 import useMyTasksList from "../hooks/useMyTaskLists.js";
 
 export default function LoginPage() {
@@ -16,12 +16,13 @@ export default function LoginPage() {
   const [alerts, setAlerts] = useState([]);
   const [alertShown, setAlertShown] = useState(false);
   const { auth, login } = useAuth();
-  const { setMyTaskLists } = useMyTasksList();
+  const { setMyTaskLists, setMyTags } = useMyTasksList();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (auth && auth.token) {
       loadTaskLists();
+      loadTags();
       navigate("/myTaskLists");
     }
   }, [auth, navigate]);
@@ -74,6 +75,21 @@ export default function LoginPage() {
         error.response?.data.errors ||
         error.response?.data.error ||
         "An unknown error occurred.";
+      addAlert("error", "Error", errorMessage);
+    } finally {
+      setOpen(false);
+    }
+  }
+
+  async function loadTags() {
+    try {
+      const response = await api.getTags(auth.token);
+      setMyTags(response.data.tags);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data.errors ||
+        error.response?.data.error ||
+        "An unknown error occurred while we tried to get the tags.";
       addAlert("error", "Error", errorMessage);
     } finally {
       setOpen(false);

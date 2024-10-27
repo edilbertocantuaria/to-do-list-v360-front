@@ -14,7 +14,7 @@ import TaskAttachment from "./TaskAttachment";
 import api from "../../services/api";
 import useAuth from "../../hooks/useAuth";
 import useReload from "../../hooks/useReload";
-import AlertList from "../AlertList";
+import AlertList from "../sharedComponents/AlertList";
 
 export default function TaskDialog({
   open,

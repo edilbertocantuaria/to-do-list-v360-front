@@ -4,12 +4,15 @@ const TaskListsContext = createContext();
 
 export function MyTasksListsProvider({ children }) {
   const [myTaskLists, setMyTaskLists] = useState([]);
+  const [myTags, setMyTags] = useState([]);
 
   return (
     <TaskListsContext.Provider
       value={{
         myTaskLists,
-        setMyTaskLists
+        setMyTaskLists,
+        myTags,
+        setMyTags
       }}
     >
       {children}

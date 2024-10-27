@@ -4,8 +4,8 @@ import { Container, TextField, Button, Link } from "@mui/material";
 import { Box } from "@mui/system";
 import api from "../services/api.js";
 import useAuth from "../hooks/useAuth.js";
-import AlertList from "../components/AlertList.jsx";
-import LoadingDialog from "../components/LoadingDialog.jsx";
+import AlertList from "../components/sharedComponents/AlertList.jsx";
+import LoadingDialog from "../components/sharedComponents/LoadingDialog.jsx";
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
