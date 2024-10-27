@@ -4,22 +4,41 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Grid2
+  Grid2,
+  TextField
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import TaskDetail from "../tasks/TaskDetail";
 import NewTaskInput from "../tasks/NewTaskInput";
+import TaskAttachment from "./TaskAttachment";
 import api from "../../services/api";
 import useAuth from "../../hooks/useAuth";
 import useReload from "../../hooks/useReload";
 import AlertList from "../AlertList";
 
-export default function TaskDialog({ open, setOpen, taskList, onClose }) {
+export default function TaskDialog({
+  open,
+  setOpen,
+  taskList,
+  onClose,
+  isEditingFile,
+  setIsEditingFile
+}) {
   const [tasks, setTasks] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [newTask, setNewTask] = useState("");
-  const [editValue, setEditValue] = useState("");
+
+  const [editTaskDescription, setEditTaskDescription] = useState("");
   const [originalTaskValue, setOriginalTaskValue] = useState("");
+
+  const [attachmentUrl, setAttachmentUrl] = useState(
+    taskList?.attachment || ""
+  );
+  const previousAttachmentUrl = taskList?.attachment || "";
+
+  const [title, setTitle] = useState(taskList?.title || "");
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const previousTitle = taskList?.title;
 
   const { auth } = useAuth();
   const { setShouldReload } = useReload();
@@ -29,6 +48,12 @@ export default function TaskDialog({ open, setOpen, taskList, onClose }) {
       setTasks(taskList.tasks);
     }
   }, [taskList]);
+
+  useEffect(() => {
+    if (!open) {
+      setNewTask("");
+    }
+  }, [open]);
 
   async function handleAddTask() {
     if (newTask.trim()) {
@@ -78,7 +103,7 @@ export default function TaskDialog({ open, setOpen, taskList, onClose }) {
 
         if (action === "edit") {
           setOriginalTaskValue(taskDescription);
-          setEditValue(taskDescription);
+          setEditTaskDescription(taskDescription);
         }
       } catch (error) {
         const errorMessage =
@@ -133,6 +158,29 @@ export default function TaskDialog({ open, setOpen, taskList, onClose }) {
     }
   }
 
+  async function handleEditTaskList(taskList) {
+    try {
+      setIsEditingFile(false);
+      setIsEditingTitle(false);
+      const body = {
+        title: title,
+        attachment: attachmentUrl
+      };
+
+      await api.putTaskList(taskList.id, body, auth.token);
+      setShouldReload(true);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data.errors ||
+        error.response?.data.error ||
+        "An unknown error occurred.";
+
+      setTitle(previousTitle);
+      setAttachmentUrl(previousAttachmentUrl);
+      addAlert("error", "Error", errorMessage);
+    }
+  }
+
   function addAlert(severity, title, message) {
     setAlerts((prevAlerts) => [...prevAlerts, { severity, title, message }]);
   }
@@ -144,7 +192,18 @@ export default function TaskDialog({ open, setOpen, taskList, onClose }) {
   return (
     <>
       <Dialog open={open} onClose={onClose} maxWidth="md">
-        <DialogTitle>{taskList?.title}</DialogTitle>
+        {isEditingTitle ? (
+          <TextField
+            value={taskList?.title}
+            onChange={(e) => setTitle(e.target.value)}
+            onBlur={() => handleEditTaskList(taskList)}
+            autoFocus
+          />
+        ) : (
+          <DialogTitle onClick={() => setIsEditingTitle(true)}>
+            {taskList?.title}
+          </DialogTitle>
+        )}
         <DialogContent>
           <Grid2 container spacing={2}>
             {tasks.map((task) => (
@@ -154,24 +213,34 @@ export default function TaskDialog({ open, setOpen, taskList, onClose }) {
                 handleToggle={() => handleTaskChange(task.id, "toggle")}
                 handleEditStart={() => {
                   setOriginalTaskValue(task.task_description);
-                  setEditValue(task.task_description);
+                  setEditTaskDescription(task.task_description);
                   setTasks((prevTasks) =>
                     prevTasks.map((t) =>
                       t.id === task.id ? { ...t, isEditing: true } : t
                     )
                   );
                 }}
-                handleEdit={() => handleTaskChange(task.id, "edit", editValue)}
+                handleEdit={() =>
+                  handleTaskChange(task.id, "edit", editTaskDescription)
+                }
                 handleDelete={handleDelete}
-                editValue={editValue}
-                setEditValue={setEditValue}
+                editTaskDescription={editTaskDescription}
+                setEditTaskDescription={setEditTaskDescription}
               />
             ))}
-
             <NewTaskInput
               newTask={newTask}
               setNewTask={setNewTask}
               handleAddTask={handleAddTask}
+            />
+
+            <TaskAttachment
+              taskList={taskList}
+              isEditingFile={isEditingFile}
+              setIsEditingFile={setIsEditingFile}
+              attachmentUrl={attachmentUrl}
+              setAttachmentUrl={setAttachmentUrl}
+              handleEditTaskList={handleEditTaskList}
             />
           </Grid2>
         </DialogContent>

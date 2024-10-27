@@ -50,9 +50,9 @@ export default function LoginPage() {
     setAlerts((prevAlerts) => [...prevAlerts, { severity, title, message }]);
   }
 
-  const handleAlertClose = (index) => {
+  function handleAlertClose(index) {
     setAlerts((prevAlerts) => prevAlerts.filter((_, i) => i !== index));
-  };
+  }
 
   return (
     <Container maxWidth="xs" sx={{ bgcolor: "#EEEEEE" }}>

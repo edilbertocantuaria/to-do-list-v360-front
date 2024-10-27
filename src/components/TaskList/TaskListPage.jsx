@@ -8,6 +8,7 @@ export default function TaskListPage({ myTaskLists }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedTaskList, setSelectedTaskList] = useState(null);
   const { openedTaskList, setOpenedTaskList } = useReload();
+  const [isEditingFile, setIsEditingFile] = useState(false);
 
   useEffect(() => {
     if (openedTaskList) {
@@ -18,17 +19,18 @@ export default function TaskListPage({ myTaskLists }) {
     }
   }, [openedTaskList, myTaskLists]);
 
-  const handleCardClick = (taskList) => {
+  function handleCardClick(taskList) {
     setOpenedTaskList(taskList.id);
     setSelectedTaskList(taskList);
     setDialogOpen(true);
-  };
+  }
 
-  const handleDialogClose = () => {
+  function handleDialogClose() {
+    setIsEditingFile(false);
     setOpenedTaskList(null);
     setDialogOpen(false);
     setSelectedTaskList(null);
-  };
+  }
 
   return (
     <Box
@@ -103,6 +105,8 @@ export default function TaskListPage({ myTaskLists }) {
         setOpen={setDialogOpen}
         taskList={selectedTaskList}
         onClose={handleDialogClose}
+        isEditingFile={isEditingFile}
+        setIsEditingFile={setIsEditingFile}
       />
     </Box>
   );

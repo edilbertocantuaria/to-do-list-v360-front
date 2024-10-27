@@ -2,9 +2,6 @@ import { TextField, Grid2, Tooltip, IconButton } from "@mui/material";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 
 export default function NewTaskInput({ newTask, setNewTask, handleAddTask }) {
-  const handleBlur = () => {
-    setNewTask("");
-  };
   return (
     <Grid2 item xs={12}>
       <Grid2
@@ -27,7 +24,6 @@ export default function NewTaskInput({ newTask, setNewTask, handleAddTask }) {
                     handleAddTask(newTask);
                   }
                 }}
-                onBlur={() => handleBlur()}
                 sx={{ marginBottom: 2, width: "50vw" }}
               />
             </Grid2>

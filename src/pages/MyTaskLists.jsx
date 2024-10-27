@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Fab, Tooltip } from "@mui/material";
@@ -63,9 +64,9 @@ export default function MyTaskLists() {
     setAlerts((prevAlerts) => [...prevAlerts, { severity, title, message }]);
   }
 
-  const handleAlertClose = (index) => {
+  function handleAlertClose(index) {
     setAlerts((prevAlerts) => prevAlerts.filter((_, i) => i !== index));
-  };
+  }
 
   const handleCreateTaskList = async () => {
     if (!newTaskListTitle) {
@@ -126,7 +127,8 @@ export default function MyTaskLists() {
       <NewTaskListDialog
         open={newTaskListDialogOpen}
         onClose={() => setNewTaskListDialogOpen(false)}
-        onCreate={handleCreateTaskList}
+        // onCreate={handleCreateTaskList}
+        auth={auth}
       />
 
       <LoadingDialog open={open} onClose={() => setOpen(false)} />
