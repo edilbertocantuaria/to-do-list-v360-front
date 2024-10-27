@@ -4,7 +4,6 @@ const ReloadContext = createContext();
 
 export function ReloadProvider({ children }) {
   const [shouldReload, setShouldReload] = useState(true);
-  const [shouldReloadTaskList, setShouldReloadTaskList] = useState(true);
   const [openedTaskList, setOpenedTaskList] = useState(null);
 
   return (
@@ -12,8 +11,6 @@ export function ReloadProvider({ children }) {
       value={{
         shouldReload,
         setShouldReload,
-        shouldReloadTaskList,
-        setShouldReloadTaskList,
         openedTaskList,
         setOpenedTaskList
       }}

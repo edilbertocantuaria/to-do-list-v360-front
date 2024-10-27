@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Fab, Tooltip } from "@mui/material";
@@ -18,7 +17,6 @@ export default function MyTaskLists() {
   const [myTaskLists, setMyTaskLists] = useState([]);
   const [alerts, setAlerts] = useState([]);
   const [alertShown, setAlertShown] = useState(false);
-  const [newTaskListTitle, setNewTaskListTitle] = useState("");
   const { auth } = useAuth();
   const { shouldReload, setShouldReload } = useReload();
   const navigate = useNavigate();
@@ -67,27 +65,6 @@ export default function MyTaskLists() {
   function handleAlertClose(index) {
     setAlerts((prevAlerts) => prevAlerts.filter((_, i) => i !== index));
   }
-
-  const handleCreateTaskList = async () => {
-    if (!newTaskListTitle) {
-      addAlert("error", "Error", "Task list title cannot be empty!");
-      return;
-    }
-
-    try {
-      await api.createTaskList(auth.token, { title: newTaskListTitle });
-      addAlert("success", "Success!", "Task list created!");
-      setNewTaskListDialogOpen(false);
-      setNewTaskListTitle("");
-      setShouldReload(true);
-    } catch (error) {
-      const errorMessage =
-        error.response?.data.errors ||
-        error.response?.data.error ||
-        "An unknown error occurred.";
-      addAlert("error", "Error", errorMessage);
-    }
-  };
 
   const onUpdateTaskList = (updatedTaskList) => {
     setMyTaskLists((prevTaskLists) =>
