@@ -20,20 +20,20 @@ export default function TaskFilter({ onFilterChange }) {
         mt: -2,
         mb: 2,
         display: "flex",
-        alignItems: "center",
+        alignItems: "baseline",
         flexDirection: "row",
         justifyContent: "flex-start",
         width: "100%"
       }}
     >
-      <Typography variant="subtitle1" sx={{ mr: 1 }}>
+      <Typography variant="subtitle1" sx={{ mr: 1, height: "35px" }}>
         Filter Tasks
       </Typography>
       <Select
         value={filter}
         onChange={handleFilterChange}
         displayEmpty
-        sx={{ minWidth: 120, mt: 1, fontSize: "0.875rem" }}
+        sx={{ minWidth: 120, mt: 1, fontSize: "0.875rem", height: "35px" }}
       >
         <MenuItem value="progressAsc">Progress (Asc)</MenuItem>
         <MenuItem value="progressDesc">Progress (Desc)</MenuItem>

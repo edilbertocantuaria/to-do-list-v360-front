@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Grid2 } from "@mui/material";
 import TaskCard from "./TaskCard";
 import TaskDialog from "./TaskDialog";
 import TaskFilter from "./TaskFilter";
+import TagsManager from "../tags/TagsManager";
 import useReload from "../../hooks/useReload";
 
 export default function TaskListPage({ myTaskLists, myTags }) {
@@ -139,7 +140,21 @@ export default function TaskListPage({ myTaskLists, myTags }) {
         gap: "20px"
       }}
     >
-      <TaskFilter onFilterChange={handleFilterChange} />
+      <Grid2
+        container
+        flexDirection="row"
+        alignContent="cente"
+        alignItems="baseline"
+        justifyContent="space-between"
+        sx={{ width: "97vw" }}
+      >
+        <Grid2 item>
+          <TaskFilter onFilterChange={handleFilterChange} />
+        </Grid2>
+        <Grid2 item>
+          <TagsManager myTags={myTags} />
+        </Grid2>
+      </Grid2>
 
       <Box sx={{ width: "100%" }}>
         <Typography

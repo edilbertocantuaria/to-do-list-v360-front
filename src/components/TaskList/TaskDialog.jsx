@@ -328,8 +328,8 @@ export default function TaskDialog({
               myTags={myTags}
               handleAddTag={handleAddTag}
               taskList={taskList}
-              handleEditTaskList={handleEditTaskList}
               isTaskDialog={true}
+              handleEditTaskList={handleEditTaskList}
             />
           </Grid2>
         </DialogContent>
