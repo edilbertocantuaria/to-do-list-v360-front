@@ -1,9 +1,10 @@
-import { Box, Card, CardContent, CardHeader, IconButton } from "@mui/material";
-import ShareIcon from "@mui/icons-material/Share";
+import { Box, Card, CardContent, CardHeader, Chip } from "@mui/material";
+
 import TaskItems from "./TaskItems";
 import TaskProgress from "./TaskProgress";
 
-export default function TaskCard({ taskList, onClick }) {
+export default function TaskCard({ taskList, myTags, onClick }) {
+  const tag = myTags.find((tagItem) => tagItem.idTag === taskList.tag_id);
   return (
     <Box
       sx={{ width: "400px", height: "200px", position: "relative", mb: "35px" }}
@@ -22,9 +23,13 @@ export default function TaskCard({ taskList, onClick }) {
         <CardHeader
           title={taskList.title}
           action={
-            <IconButton onClick={(e) => e.stopPropagation()}>
-              <ShareIcon />
-            </IconButton>
+            tag && (
+              <Chip
+                label={tag.tagName}
+                onClick={(e) => e.stopPropagation()}
+                sx={{ width: "7vw" }}
+              />
+            )
           }
         />
         <CardContent

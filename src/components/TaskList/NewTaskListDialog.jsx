@@ -13,14 +13,19 @@ import ConfirmLeaveDialog from "../sharedComponents/ConfirmLeaveDialog";
 import api from "../../services/api";
 import AlertList from "../sharedComponents/AlertList";
 import useReload from "../../hooks/useReload";
+import TagsChoice from "../tags/TagsChoice";
 
-export default function NewTaskListDialog({ open, onClose, auth }) {
+export default function NewTaskListDialog({ open, onClose, myTags, auth }) {
   const [title, setTitle] = useState("");
   const [tasks, setTasks] = useState([""]);
   const [attachmentUrl, setAttachmentUrl] = useState("");
   const [alerts, setAlerts] = useState([]);
   const [isEditingFile, setIsEditingFile] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [selectedTag, setSelectedTag] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [newTag, setNewTag] = useState("");
+  const [tagId, setTagId] = useState(null);
   const { setShouldReload } = useReload();
 
   function originalState() {
@@ -28,6 +33,8 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
     setTasks([""]);
     setAttachmentUrl("");
     setIsEditingFile(false);
+    setSelectedTag("");
+    setNewTag("");
   }
 
   async function handleAddTask(newTask) {
@@ -37,10 +44,24 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
   }
 
   async function handleAddTaskLists() {
+    let tagIdToUse = tagId;
+
+    if (selectedTag && !myTags.some((tag) => tag.tagName === selectedTag)) {
+      try {
+        tagIdToUse = await handleAddTag(selectedTag);
+
+        setTagId(tagIdToUse);
+      } catch (error) {
+        addAlert("error", "Error", "Erro ao criar a nova tag.");
+        return;
+      }
+    }
+
     const body = {
       task_list: {
         title: title.trim(),
         attachment: attachmentUrl || null,
+        tag_id: tagId || null,
         tasks_attributes: tasks
           .filter((task) => task.trim() !== "")
           .map((task) => ({
@@ -60,6 +81,27 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
         error.response?.data.error ||
         "An unknown error occurred.";
       addAlert("error", "Error", errorMessage);
+    }
+  }
+
+  async function handleAddTag(tagValue) {
+    if (tagValue) {
+      const body = { tag_name: tagValue.trim() };
+      try {
+        setLoading(true);
+        const response = await api.postTag(body, auth.token);
+        setTagId(response.data.idTag);
+        setSelectedTag(response.data.tagName);
+        setLoading(false);
+        setShouldReload(true);
+      } catch (error) {
+        const errorMessage =
+          error.response?.data.errors ||
+          error.response?.data.error ||
+          "An unknown error occurred.";
+        setLoading(false);
+        addAlert("error", "Error", errorMessage);
+      }
     }
   }
 
@@ -84,11 +126,14 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
   function handleCloseConfirm() {
     setOpenConfirmDialog(false);
   }
+
   const hasInfo =
     open &&
     (title?.trim() ||
       tasks?.some((task) => task.trim()) ||
-      attachmentUrl?.trim());
+      attachmentUrl?.trim() ||
+      selectedTag ||
+      newTag);
 
   return (
     <>
@@ -118,7 +163,6 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
                     setTasks(newTasks);
                   }}
                   handleAddTask={handleAddTask}
-                  isNewTaskDialog={true}
                 />
               ))}
             </Grid2>
@@ -127,10 +171,19 @@ export default function NewTaskListDialog({ open, onClose, auth }) {
             <Grid2 item xs={12} sx={{ mt: 3 }}>
               <TaskAttachment
                 isEditingFile={isEditingFile}
+                setIsEditingFile={setIsEditingFile}
                 setAttachmentUrl={setAttachmentUrl}
               />
             </Grid2>
           </Grid2>
+          <TagsChoice
+            selectedTag={selectedTag}
+            setSelectedTag={setSelectedTag}
+            loading={loading}
+            setTagId={setTagId}
+            myTags={myTags}
+            handleAddTag={handleAddTag}
+          />
         </DialogContent>
 
         <DialogActions>

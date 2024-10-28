@@ -57,6 +57,7 @@ export default function TaskDetail({
                 <Typography
                   variant="body1"
                   sx={{
+                    width: "46.16vw",
                     textDecoration: task.is_task_done ? "line-through" : "none",
                     fontStyle: task.is_task_done ? "italic" : "normal",
                     marginLeft: 1,

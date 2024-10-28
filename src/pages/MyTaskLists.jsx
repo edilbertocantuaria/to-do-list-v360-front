@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Fab, Tooltip } from "@mui/material";
@@ -31,7 +30,9 @@ export default function MyTaskLists() {
   }, [auth, navigate]);
 
   useEffect(() => {
-    if (shouldReload) loadTaskLists();
+    if (shouldReload) {
+      loadTaskLists(), loadTags();
+    }
   }, [shouldReload]);
 
   async function loadTaskLists() {
@@ -61,6 +62,21 @@ export default function MyTaskLists() {
     }
   }
 
+  async function loadTags() {
+    try {
+      const response = await api.getTags(auth.token);
+      setMyTags(response.data.tags);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data.errors ||
+        error.response?.data.error ||
+        "An unknown error occurred while we tried to get the tags.";
+      addAlert("error", "Error", errorMessage);
+    } finally {
+      setOpen(false);
+    }
+  }
+
   function addAlert(severity, title, message) {
     setAlerts((prevAlerts) => [...prevAlerts, { severity, title, message }]);
   }
@@ -82,6 +98,7 @@ export default function MyTaskLists() {
       <Header />
       <TaskListPage
         myTaskLists={myTaskLists}
+        myTags={myTags}
         onUpdateTaskList={onUpdateTaskList}
       />
 
@@ -106,6 +123,7 @@ export default function MyTaskLists() {
 
       <NewTaskListDialog
         open={newTaskListDialogOpen}
+        myTags={myTags}
         onClose={() => setNewTaskListDialogOpen(false)}
         auth={auth}
       />

@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import TaskCard from "./TaskCard";
 import TaskDialog from "./TaskDialog";
-import TaskFilter from "../TaskFilter";
+import TaskFilter from "./TaskFilter";
 import useReload from "../../hooks/useReload";
 
-export default function TaskListPage({ myTaskLists }) {
+export default function TaskListPage({ myTaskLists, myTags }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedTaskList, setSelectedTaskList] = useState(null);
   const { openedTaskList, setOpenedTaskList } = useReload();
@@ -20,6 +20,17 @@ export default function TaskListPage({ myTaskLists }) {
       setSelectedTaskList(null);
     }
   }, [openedTaskList, myTaskLists]);
+
+  useEffect(() => {
+    if (openedTaskList) {
+      const taskList = myTaskLists.find((list) => list.id === openedTaskList);
+      if (taskList !== selectedTaskList) {
+        setSelectedTaskList(taskList || null);
+      }
+    } else if (selectedTaskList !== null) {
+      setSelectedTaskList(null);
+    }
+  }, [openedTaskList, myTaskLists, selectedTaskList, myTags]);
 
   function handleCardClick(taskList) {
     setOpenedTaskList(taskList.id);
@@ -100,7 +111,9 @@ export default function TaskListPage({ myTaskLists }) {
         break;
     }
 
-    setFilteredTaskLists(sortedTasks);
+    if (JSON.stringify(sortedTasks) !== JSON.stringify(filteredTaskLists)) {
+      setFilteredTaskLists(sortedTasks);
+    }
   }
 
   const pendingTaskLists = filteredTaskLists.filter(
@@ -148,6 +161,7 @@ export default function TaskListPage({ myTaskLists }) {
         <TaskCard
           key={taskList.id}
           taskList={taskList}
+          myTags={myTags}
           onClick={handleCardClick}
         />
       ))}
@@ -172,6 +186,7 @@ export default function TaskListPage({ myTaskLists }) {
         <TaskCard
           key={taskList.id}
           taskList={taskList}
+          myTags={myTags}
           onClick={handleCardClick}
         />
       ))}

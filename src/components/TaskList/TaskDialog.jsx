@@ -11,9 +11,11 @@ import { useState, useEffect } from "react";
 import TaskDetail from "../tasks/TaskDetail";
 import NewTaskInput from "../tasks/NewTaskInput";
 import TaskAttachment from "./TaskAttachment";
+import TagsChoice from "../tags/TagsChoice";
 import api from "../../services/api";
 import useAuth from "../../hooks/useAuth";
 import useReload from "../../hooks/useReload";
+import useMyTasksList from "../../hooks/useMyTaskLists";
 import AlertList from "../sharedComponents/AlertList";
 
 export default function TaskDialog({
@@ -41,18 +43,27 @@ export default function TaskDialog({
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [auxTitle, setAuxTitle] = useState(title);
 
+  const [loading, setLoading] = useState(false);
+
+  const [selectedTag, setSelectedTag] = useState("");
+  const [tagId, setTagId] = useState(taskList?.idTag || null);
+  const { myTags } = useMyTasksList();
+
   const { auth } = useAuth();
   const { setShouldReload } = useReload();
 
   useEffect(() => {
     if (taskList && taskList.tasks) {
       setTasks(taskList.tasks);
+      setTagId(taskList.idTag);
     }
   }, [taskList]);
 
   useEffect(() => {
     if (!open) {
       setNewTask("");
+      setSelectedTag("");
+      setTagId(null);
     }
   }, [open]);
 
@@ -90,6 +101,28 @@ export default function TaskDialog({
           error.response?.data.errors ||
           error.response?.data.error ||
           "An unknown error occurred.";
+        addAlert("error", "Error", errorMessage);
+      }
+    }
+  }
+
+  async function handleAddTag(tagValue) {
+    if (tagValue) {
+      const body = { tag_name: tagValue.trim() };
+      try {
+        setLoading(true);
+        const response = await api.postTag(body, auth.token);
+        setTagId(response.data.idTag);
+        setSelectedTag(response.data.tagName);
+        setLoading(false);
+        setShouldReload(true);
+        return response.data;
+      } catch (error) {
+        const errorMessage =
+          error.response?.data.errors ||
+          error.response?.data.error ||
+          "An unknown error occurred.";
+        setLoading(false);
         addAlert("error", "Error", errorMessage);
       }
     }
@@ -187,7 +220,8 @@ export default function TaskDialog({
 
       const body = {
         title: newTitle,
-        attachment: attachmentUrl
+        attachment: attachmentUrl,
+        tag_id: tagId
       };
 
       const response = await api.putTaskList(taskList.id, body, auth.token);
@@ -216,6 +250,7 @@ export default function TaskDialog({
 
   function handleCloseDialog() {
     originalState();
+    setSelectedTag(null);
     onClose();
   }
 
@@ -283,6 +318,18 @@ export default function TaskDialog({
               attachmentUrl={attachmentUrl}
               setAttachmentUrl={setAttachmentUrl}
               handleEditTaskList={handleEditTaskList}
+            />
+
+            <TagsChoice
+              selectedTag={selectedTag}
+              setSelectedTag={setSelectedTag}
+              loading={loading}
+              setTagId={setTagId}
+              myTags={myTags}
+              handleAddTag={handleAddTag}
+              taskList={taskList}
+              handleEditTaskList={handleEditTaskList}
+              isTaskDialog={true}
             />
           </Grid2>
         </DialogContent>
