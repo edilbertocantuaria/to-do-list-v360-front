@@ -37,16 +37,14 @@ export default function SignUpPage() {
     setOpen(true);
 
     try {
-      const response = await api.signUp({ ...formData });
-      response.then(() => {
-        addAlert("success", "Success!", "New account registered.");
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          password_confirmation: "",
-          user_picture: ""
-        });
+      await api.signUp({ ...formData });
+      addAlert("success", "Success!", "New account registered.");
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        password_confirmation: "",
+        user_picture: ""
       });
     } catch (error) {
       const errorMessage =

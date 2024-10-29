@@ -43,7 +43,11 @@ export default function TagManager({ myTags }) {
       setShouldReload(true);
       setEditingId(null);
     } catch (error) {
-      console.error("Erro ao editar tag:", error);
+      const errorMessage =
+        error.response?.data.errors ||
+        error.response?.data.error ||
+        "An unknown error occurred.";
+      return errorMessage;
     }
   }
 
@@ -52,7 +56,11 @@ export default function TagManager({ myTags }) {
       await api.deleteTag(id, auth.token);
       setShouldReload(true);
     } catch (error) {
-      console.error("Erro ao excluir tag:", error);
+      const errorMessage =
+        error.response?.data.errors ||
+        error.response?.data.error ||
+        "An unknown error occurred.";
+      return errorMessage;
     }
   }
 
@@ -65,7 +73,11 @@ export default function TagManager({ myTags }) {
         setShouldReload(true);
         return response.data;
       } catch (error) {
-        console.error("Erro ao adicionar tag:", error);
+        const errorMessage =
+          error.response?.data.errors ||
+          error.response?.data.error ||
+          "An unknown error occurred.";
+        return errorMessage;
       }
     }
   }
@@ -73,11 +85,7 @@ export default function TagManager({ myTags }) {
   return (
     <>
       <Tooltip title="Tag Manager">
-        <Button
-          variant="outlined"
-          onClick={handleOpen}
-          sx={{ height: "35px", mt: -2 }}
-        >
+        <Button variant="outlined" onClick={handleOpen} sx={{ height: "35px" }}>
           Tag Manager
         </Button>
       </Tooltip>
@@ -161,7 +169,7 @@ export default function TagManager({ myTags }) {
                 item
                 sx={{ position: "absolute", right: 0, display: "flex", gap: 1 }}
               >
-                <Tooltip title="Add task">
+                <Tooltip title="Add tag">
                   <IconButton
                     onClick={() => handleAddTag(newTag)}
                     sx={{ color: "#109DCB" }}

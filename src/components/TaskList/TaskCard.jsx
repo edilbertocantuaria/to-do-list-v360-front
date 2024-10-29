@@ -27,7 +27,12 @@ export default function TaskCard({ taskList, myTags, onClick }) {
               <Chip
                 label={tag.tagName}
                 onClick={(e) => e.stopPropagation()}
-                sx={{ width: "7vw" }}
+                sx={{
+                  width: "30vw",
+                  "@media (min-width: 810px)": {
+                    width: "10vw"
+                  }
+                }}
               />
             )
           }

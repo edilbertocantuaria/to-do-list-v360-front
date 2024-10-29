@@ -17,13 +17,15 @@ export default function TaskFilter({ onFilterChange }) {
   return (
     <Box
       sx={{
-        mt: -2,
-        mb: 2,
         display: "flex",
         alignItems: "baseline",
         flexDirection: "row",
         justifyContent: "flex-start",
-        width: "100%"
+        width: "100%",
+        "@media (max-width: 425px)": {
+          flexDirection: "column",
+          alignItems: "flex-start"
+        }
       }}
     >
       <Typography variant="subtitle1" sx={{ mr: 1, height: "35px" }}>
@@ -33,7 +35,12 @@ export default function TaskFilter({ onFilterChange }) {
         value={filter}
         onChange={handleFilterChange}
         displayEmpty
-        sx={{ minWidth: 120, mt: 1, fontSize: "0.875rem", height: "35px" }}
+        sx={{ minWidth: 120, mt: 1, fontSize: "0.875rem", height: "35px",  "@media (max-width: 425px)": {
+          flexDirection: "column",
+          alignItems: "flex-start",
+          mt:-1
+          
+        } }}
       >
         <MenuItem value="progressAsc">Progress (Asc)</MenuItem>
         <MenuItem value="progressDesc">Progress (Desc)</MenuItem>

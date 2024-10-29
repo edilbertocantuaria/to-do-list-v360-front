@@ -129,10 +129,9 @@ export default function TaskListPage({ myTaskLists, myTags }) {
       sx={{
         width: "100%",
         bgcolor: "#EEEEEE",
-        mt: "20px",
         mb: "20px",
         ml: "1.5px",
-        pt: 2,
+        pt: 1,
         pb: 2,
         display: "flex",
         flexWrap: "wrap",
@@ -143,8 +142,7 @@ export default function TaskListPage({ myTaskLists, myTags }) {
       <Grid2
         container
         flexDirection="row"
-        alignContent="cente"
-        alignItems="baseline"
+        alignItems="center"
         justifyContent="space-between"
         sx={{ width: "97vw" }}
       >

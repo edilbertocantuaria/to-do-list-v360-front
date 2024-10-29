@@ -6,9 +6,9 @@ export default function TaskAttachment({
   setIsEditingFile,
   attachmentUrl,
   setAttachmentUrl,
-  handleEditTaskList
+  handleEditTaskList,
+  isNewTaskListDialog
 }) {
-  setAttachmentUrl(taskList?.attachment || "");
   return (
     <>
       <Grid2 item xs={12}>
@@ -62,7 +62,7 @@ export default function TaskAttachment({
                 value={attachmentUrl}
                 onChange={(e) => setAttachmentUrl(e.target.value)}
                 onBlur={() => {
-                  handleEditTaskList(taskList), setIsEditingFile(false);
+                  !isNewTaskListDialog ? handleEditTaskList(taskList) : "";
                 }}
                 sx={{ width: "50vw" }}
               />

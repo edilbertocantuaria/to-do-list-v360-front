@@ -117,7 +117,7 @@ export default function NewTaskListDialog({ open, onClose, myTags, auth }) {
     hasInfo ? setOpenConfirmDialog(true) : onClose();
   }
 
-  function handleConfirmCancel() {
+  function handleCloseCancel() {
     setOpenConfirmDialog(false);
     originalState();
     onClose();
@@ -172,7 +172,9 @@ export default function NewTaskListDialog({ open, onClose, myTags, auth }) {
               <TaskAttachment
                 isEditingFile={isEditingFile}
                 setIsEditingFile={setIsEditingFile}
+                attachmentUrl={attachmentUrl} 
                 setAttachmentUrl={setAttachmentUrl}
+                isNewTaskListDialog={true}
               />
             </Grid2>
           </Grid2>
@@ -187,7 +189,7 @@ export default function NewTaskListDialog({ open, onClose, myTags, auth }) {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleCancel} sx={{ color: "#DA4646" }}>
+          <Button onClick={handleCloseCancel} sx={{ color: "#DA4646" }}>
             Cancel
           </Button>
           <Button
@@ -202,9 +204,9 @@ export default function NewTaskListDialog({ open, onClose, myTags, auth }) {
       {hasInfo && (
         <ConfirmLeaveDialog
           open={openConfirmDialog}
-          onClose={handleCloseConfirm}
+          onClose={() => setOpenConfirmDialog(false)}
           onClickConfirm={handleCloseConfirm}
-          onClickCancel={handleConfirmCancel}
+          onClickCancel={() => setOpenConfirmDialog(false)}
         />
       )}
 

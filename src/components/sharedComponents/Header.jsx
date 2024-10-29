@@ -12,20 +12,23 @@ import {
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { useLocation } from "react-router-dom";
 import capitalize from "capitalize-pt-br";
+import useReload from "../../hooks/useReload.js";
 
 export default function Header() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const [userData, setUserData] = useState(null);
+  const { shouldReload } = useReload();
 
   useEffect(() => {
     const fetchUserData = async () => {
       const data = await user();
       setUserData(data);
+
     };
 
     fetchUserData();
-  }, [user]);
+  }, [user, shouldReload]);
 
   if (pathsWithoutHeaderAndMenu.includes(location.pathname)) {
     return null;

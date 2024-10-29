@@ -67,6 +67,12 @@ export default function TaskDialog({
     }
   }, [open]);
 
+  useEffect(() => {
+    if (isEditingFile) {
+      setAttachmentUrl(taskList?.attachment || "");
+    }
+  }, [isEditingFile, taskList]);
+
   function originalState() {
     setTasks([]);
     setAlerts([]);
@@ -221,8 +227,10 @@ export default function TaskDialog({
       const body = {
         title: newTitle,
         attachment: attachmentUrl,
-        tag_id: tagId
+        tag_id: tagId || null
       };
+
+      console.log(body);
 
       const response = await api.putTaskList(taskList.id, body, auth.token);
       setShouldReload(true);
@@ -264,6 +272,7 @@ export default function TaskDialog({
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             onBlur={() => {
+              handleEditTaskList(taskList, newTitle);
               originalState();
               setIsEditingTitle(false);
             }}
@@ -327,9 +336,9 @@ export default function TaskDialog({
               setTagId={setTagId}
               myTags={myTags}
               handleAddTag={handleAddTag}
+              handleEditTaskList={handleEditTaskList}
               taskList={taskList}
               isTaskDialog={true}
-              handleEditTaskList={handleEditTaskList}
             />
           </Grid2>
         </DialogContent>
@@ -342,7 +351,7 @@ export default function TaskDialog({
           </Button>
 
           <Button onClick={handleCloseDialog} sx={{ color: "#0A6AE2" }}>
-            Close
+            Save and Close
           </Button>
         </DialogActions>
       </Dialog>
