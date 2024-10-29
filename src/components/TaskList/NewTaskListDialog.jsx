@@ -172,7 +172,7 @@ export default function NewTaskListDialog({ open, onClose, myTags, auth }) {
               <TaskAttachment
                 isEditingFile={isEditingFile}
                 setIsEditingFile={setIsEditingFile}
-                attachmentUrl={attachmentUrl} 
+                attachmentUrl={attachmentUrl}
                 setAttachmentUrl={setAttachmentUrl}
                 isNewTaskListDialog={true}
               />

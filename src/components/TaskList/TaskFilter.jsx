@@ -35,12 +35,17 @@ export default function TaskFilter({ onFilterChange }) {
         value={filter}
         onChange={handleFilterChange}
         displayEmpty
-        sx={{ minWidth: 120, mt: 1, fontSize: "0.875rem", height: "35px",  "@media (max-width: 425px)": {
-          flexDirection: "column",
-          alignItems: "flex-start",
-          mt:-1
-          
-        } }}
+        sx={{
+          minWidth: 120,
+          mt: 1,
+          fontSize: "0.875rem",
+          height: "35px",
+          "@media (max-width: 425px)": {
+            flexDirection: "column",
+            alignItems: "flex-start",
+            mt: -1
+          }
+        }}
       >
         <MenuItem value="progressAsc">Progress (Asc)</MenuItem>
         <MenuItem value="progressDesc">Progress (Desc)</MenuItem>

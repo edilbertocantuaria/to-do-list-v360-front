@@ -230,8 +230,6 @@ export default function TaskDialog({
         tag_id: tagId || null
       };
 
-      console.log(body);
-
       const response = await api.putTaskList(taskList.id, body, auth.token);
       setShouldReload(true);
       setTitle(response.data.title);

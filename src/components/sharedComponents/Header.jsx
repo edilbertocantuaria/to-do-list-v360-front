@@ -24,7 +24,6 @@ export default function Header() {
     const fetchUserData = async () => {
       const data = await user();
       setUserData(data);
-
     };
 
     fetchUserData();
