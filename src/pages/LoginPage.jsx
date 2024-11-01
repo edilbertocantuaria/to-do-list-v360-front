@@ -36,10 +36,24 @@ export default function LoginPage() {
     setIsLoading(true);
     setOpen(true);
 
+    const timeout5s = setTimeout(() => {
+      addAlert("info", "Info", "This is taking longer than the usual.");
+    }, 5000);
+
+    const timeout10s = setTimeout(() => {
+      addAlert("error", "Error", "Server not available.");
+      setIsLoading(false);
+      setOpen(false);
+    }, 10000);
+
     try {
       const response = await api.login({ ...formData });
+      clearTimeout(timeout5s);
+      clearTimeout(timeout10s);
       login(response.data);
     } catch (error) {
+      clearTimeout(timeout5s);
+      clearTimeout(timeout10s);
       const errorMessage =
         error.response?.data.errors ||
         error.response?.data.error ||

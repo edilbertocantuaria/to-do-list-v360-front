@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://todolist-v360.onrender.com/";
+const BASE_URL = "https://todolist-v360.onrender.com";
 
 function createConfig(token) {
   return { headers: { Authorization: `${token}` } };
