@@ -2,6 +2,8 @@
 
 This APP is designed to manage task lists, enabling users to organize tasks in a structured way. The API supports creating multiple task lists, each containing multiple tasks, and allows for additional functionality such as tagging, file attachments, and route authentication. 
 
+The front-end application is built using [Material-UI (MUI)](https://mui.com/), which provides a set of React components that follow Google's Material Design guidelines, ensuring a modern and responsive user interface.
+
 ## Example Use Case
 
 A user logs into the application to create a new project under their task lists. Within this project, they can add tasks with descriptions, assign tags to categorize these tasks, and attach relevant files for easy access. They can filter tasks by tags or due dates and mark tasks as complete when finished. All data is secure, as only authenticated users have access to their respective task lists and tasks.
