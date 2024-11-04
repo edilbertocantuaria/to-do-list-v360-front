@@ -1,70 +1,58 @@
-# Getting Started with Create React App
+# To Do List Web
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This API is designed to manage task lists, enabling users to organize tasks in a structured way. The API supports creating multiple task lists, each containing multiple tasks, and allows for additional functionality such as tagging, file attachments, and route authentication. 
 
-## Available Scripts
+## Example Use Case
 
-In the project directory, you can run:
+A user logs into the application to create a new project under their task lists. Within this project, they can add tasks with descriptions, assign tags to categorize these tasks, and attach relevant files for easy access. They can filter tasks by tags or due dates and mark tasks as complete when finished. All data is secure, as only authenticated users have access to their respective task lists and tasks.
 
-### `npm start`
+**API Documentation**
+   - Detailed API documentation is available [here](https://github.com/edilbertocantuaria/ToDoList_V360_Backend).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+## Installation and Setup
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This API is developed using [Node.js](https://nodejs.org/) and requires either NPM or Yarn to manage dependencies.
 
-### `npm run build`
+### Pre requisites
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- [Node.js](https://nodejs.org/) 
+- Yarn (v1.22 or higher)
+- You can also check if the installation got right or version using the following commands:
+  ```bash
+    node --version
+    yarn --v
+  ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Installing Dependencies and Running the Application
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. **Clone the repository**:
 
-### `npm run eject`
+   ```bash
+   git clone https://github.com/edilbertocantuaria/to-do-list-v360-front
+   cd to-do-list-v360-front
+   ```
+2. **Install the dependencies**:
+   ```bash
+    yarn install
+   ```
+3. **Running the application**: After installing the dependencies, you can run the API using the following command:
+   ```bash
+    yarn start
+   ``` 
+The API will be running by default at http://localhost:3000.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Linting
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+To ensure code quality and consistency, this project uses [ESLint](https://eslint.org/). You can run the linter with the following command:
+   ```bash
+    yarn lint
+   ```
+This command will check your code for stylistic errors and enforce coding standards defined in the ESLint configuration file.
+#### Automatic Fixes
+You can also automatically fix some issues by running: 
+   ```bash
+    yarn lint:fix
+   ```
+ This command will attempt to fix any fixable errors in your code, helping you maintain a cleaner codebase.
